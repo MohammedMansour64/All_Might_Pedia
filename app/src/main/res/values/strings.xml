@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">All Might Pedia</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Brief</string>
+    <string name="menu_gallery">All Might Gallery</string>
+    <string name="menu_slideshow">All Might Moments</string>
+    <string name="menu_Quiz">All Might Quiz</string>
+
+    <string name="AllMight_description">Toshinori Yagi (八や木ぎ俊とし典のり Yagi Toshinori?), more commonly known by his hero name, All Might (オールマイト Ōru Maito?), is the tritagonist of My Hero Academia, and the arc protagonist of the Hideout Raid Arc. All Might is the former No. 1 Pro Hero who bore the title of the world\'s Symbol of Peace (平和の象徴 Heiwa no Shōchō?). He teaches Foundational Hero Studies at U.A. High School.
+
+All Might was the eighth holder of the One For All Quirk after receiving it from Nana Shimura. He has since passed the torch to Izuku Midoriya, whom he is training to be his successor. After using up all the embers of One For All to defeat All For One, All Might retired and ended his era as the world\'s greatest hero.</string>
+</resources>

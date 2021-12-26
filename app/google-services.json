@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "686275879869",
+    "project_id": "all-might-pedia",
+    "storage_bucket": "all-might-pedia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686275879869:android:fe7cd0034623690555a8d4",
+        "android_client_info": {
+          "package_name": "com.mohammedev.allmightpedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686275879869-qopdgr96f657bm0c6c8aleqvcebsdmcm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLU4gjRIfYFVcp4tt1xPdqcOs7UWRBHwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686275879869-qopdgr96f657bm0c6c8aleqvcebsdmcm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
