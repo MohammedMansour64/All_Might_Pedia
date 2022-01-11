@@ -22,4 +22,9 @@
         android:name="com.mohammedev.allmightpedia.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_quiz"
+        android:name="com.mohammedev.allmightpedia.ui.Quiz.QuizFragment"
+        android:label="@string/menu_Quiz"
+        tools:layout="@layout/quiz_fragment" />
 </navigation>

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/circle_shape.xml" value="0.287109375" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/ic_menu_camera.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.15405405405405406" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/image_red_border.xml" value="0.34814814814814815" />
@@ -14,9 +15,12 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/content_main.xml" value="0.245018115942029" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_gallery.xml" value="0.21240942028985507" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_home.xml" value="0.33" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_quiz.xml" value="0.27181467181467184" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_slideshow.xml" value="0.21240942028985507" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/gallery_recycler_view.xml" value="0.22" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/nav_header_main.xml" value="0.25" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/quiz_fragment.xml" value="0.22152777777777777" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/quiz_question_layout.xml" value="0.275" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/activity_main_drawer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/main.xml" value="0.25" />
       </map>
