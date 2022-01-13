@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yellowOne">#E4B30E</color>
     <color name="yellowTwo">#FBAE47</color>
-    <color name="redOne">#FF3D00</color>
-    <color name="redTwo">#B32B00</color>
+    <color name="redOne">#9F2424</color>
+    <color name="redTwo">#B30000</color>
     <color name="blueOne">#364CC8</color>
     <color name="blueTwo">#0F40BC</color>
 </resources>

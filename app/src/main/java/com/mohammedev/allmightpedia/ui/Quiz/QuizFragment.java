@@ -1,5 +1,7 @@
 package com.mohammedev.allmightpedia.ui.Quiz;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Color;
@@ -10,6 +12,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDestination;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +33,7 @@ import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Question;
 import com.mohammedev.allmightpedia.databinding.FragmentQuizBinding;
 import com.mohammedev.allmightpedia.databinding.QuizQuestionLayoutBinding;
+import com.mohammedev.allmightpedia.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +49,7 @@ public class QuizFragment extends Fragment {
     public Button one, two, three, four;
     public TextView questionTitle, questionCounter;
     public int currentQuestion;
-    public int numberCorrectAnswers;
+    public int numberCorrectAnswers = 0;
     int nextQuestion;
     public String correctAnswer;
     int oneClick = 0,twoClick = 0,threeClick = 0,fourClick = 0;
@@ -60,12 +66,12 @@ public class QuizFragment extends Fragment {
         bindingSecond = QuizQuestionLayoutBinding.inflate(inflater, container, false);
 
         View root = binding.getRoot();
-        one = binding.included.answerOneBtn;
-        two = binding.included.answerTwoBtn;
-        three = binding.included.answerThreeBtn;
-        four = binding.included.answerFourBtn;
-        questionTitle = binding.included.questionTxt;
-        questionCounter = binding.included.questionCounter;
+        one = binding.includedQuiz.answerOneBtn;
+        two = binding.includedQuiz.answerTwoBtn;
+        three = binding.includedQuiz.answerThreeBtn;
+        four = binding.includedQuiz.answerFourBtn;
+        questionTitle = binding.includedQuiz.questionTxt;
+        questionCounter = binding.includedQuiz.questionCounter;
         progressBar = binding.progressBar;
 
         binding.startQuiz.setOnClickListener(new View.OnClickListener() {
@@ -76,8 +82,27 @@ public class QuizFragment extends Fragment {
             }
         });
 
+        binding.includedFinish.exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(root).navigate(R.id.action_nav_quiz_to_nav_home);
+            }
+        });
+
+        binding.includedFinish.playAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                questionsArray.clear();
+                numberCorrectAnswers = 0;
+                currentQuestion = 0;
+                nextQuestion = 0;
+                fetchQuizData();
+            }
+        });
+
         one.setOnClickListener(v -> {
-            one.setBackgroundColor(Color.BLUE);
+            one.setBackgroundColor(Color.GREEN);
             two.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             three.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             four.setBackgroundColor(getResources().getColor(R.color.yellowOne));
@@ -88,7 +113,7 @@ public class QuizFragment extends Fragment {
         });
 
         two.setOnClickListener(v -> {
-            two.setBackgroundColor(Color.BLUE);
+            two.setBackgroundColor(Color.GREEN);
             one.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             three.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             four.setBackgroundColor(getResources().getColor(R.color.yellowOne));
@@ -99,7 +124,7 @@ public class QuizFragment extends Fragment {
         });
 
         three.setOnClickListener(v -> {
-            three.setBackgroundColor(Color.BLUE);
+            three.setBackgroundColor(Color.GREEN);
             one.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             two.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             four.setBackgroundColor(getResources().getColor(R.color.yellowOne));
@@ -110,7 +135,7 @@ public class QuizFragment extends Fragment {
         });
 
         four.setOnClickListener(v -> {
-            four.setBackgroundColor(Color.BLUE);
+            four.setBackgroundColor(Color.GREEN);
             two.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             three.setBackgroundColor(getResources().getColor(R.color.yellowOne));
             one.setBackgroundColor(getResources().getColor(R.color.yellowOne));
@@ -121,7 +146,7 @@ public class QuizFragment extends Fragment {
         });
 
 
-        binding.included.nextBtn.setOnClickListener(new View.OnClickListener() {
+        binding.includedQuiz.nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nextQuestion();
@@ -142,6 +167,9 @@ public class QuizFragment extends Fragment {
 
         binding.textView4.setVisibility(View.GONE);
         binding.startQuiz.setVisibility(View.GONE);
+        binding.textView5.setVisibility(View.GONE);
+        binding.imageView.setVisibility(View.GONE);
+        binding.includedFinish.getRoot().setVisibility(View.GONE);
 
 
         Query query = FirebaseDatabase.getInstance().getReference().child("quiz");
@@ -154,7 +182,7 @@ public class QuizFragment extends Fragment {
                 }
                 System.out.println(questionsArray.size());
                 progressBar.setVisibility(View.GONE);
-                binding.included.getRoot().setVisibility(View.VISIBLE);
+                binding.includedQuiz.getRoot().setVisibility(View.VISIBLE);
                 sequenceTheQuiz();
             }
 
@@ -220,7 +248,7 @@ public class QuizFragment extends Fragment {
                         System.out.println(numberCorrectAnswers);
                     }
                 }
-
+                System.out.println(numberCorrectAnswers);
                 oneClick = 0;
                 twoClick = 0;
                 threeClick = 0;
@@ -231,22 +259,77 @@ public class QuizFragment extends Fragment {
                 four.setBackgroundColor(getResources().getColor(R.color.yellowOne));
 
                 nextQuestion = currentQuestion += 1;
-                answersArray.add(questionsArray.get(nextQuestion).getAnswerOne());
-                answersArray.add(questionsArray.get(nextQuestion).getAnswerTwo());
-                answersArray.add(questionsArray.get(nextQuestion).getAnswerThree());
-                answersArray.add(questionsArray.get(nextQuestion).getAnswerFour());
-                Collections.shuffle(answersArray);
+                if (nextQuestion >= questionsArray.size()){
+                    finishQuiz();
+                }else{
+                    answersArray.add(questionsArray.get(nextQuestion).getAnswerOne());
+                    answersArray.add(questionsArray.get(nextQuestion).getAnswerTwo());
+                    answersArray.add(questionsArray.get(nextQuestion).getAnswerThree());
+                    answersArray.add(questionsArray.get(nextQuestion).getAnswerFour());
+                    Collections.shuffle(answersArray);
 
 
-                correctAnswer = questionsArray.get(nextQuestion).getCorrectAnswer();
-                questionCounter.setText(String.valueOf(nextQuestion + 1) + "/" + questionsArray.size());
-                questionTitle.setText(questionsArray.get(nextQuestion).getQuestionTitle());
-                one.setText(answersArray.get(0));
-                two.setText(answersArray.get(1));
-                three.setText(answersArray.get(2));
-                four.setText(answersArray.get(3));
+                    correctAnswer = questionsArray.get(nextQuestion).getCorrectAnswer();
+                    questionCounter.setText(String.valueOf(nextQuestion + 1) + "/" + questionsArray.size());
+                    questionTitle.setText(questionsArray.get(nextQuestion).getQuestionTitle());
+                    one.setText(answersArray.get(0));
+                    two.setText(answersArray.get(1));
+                    three.setText(answersArray.get(2));
+                    four.setText(answersArray.get(3));
+                }
 
             }
+        }
+    }
+
+    public void finishQuiz(){
+        binding.includedQuiz.getRoot().setVisibility(View.GONE);
+        binding.includedFinish.getRoot().setVisibility(View.VISIBLE);
+
+
+
+        if (numberCorrectAnswers == questionsArray.size()){
+            binding.includedFinish.scoreTxt.setText(numberCorrectAnswers + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_full);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.full);
+        }else if (numberCorrectAnswers == Math.round(questionsArray.size() * 0.9)){
+            int x = (int) Math.round(questionsArray.size() * 0.9);
+            System.out.println(x + " 0.9");
+            binding.includedFinish.scoreTxt.setText(x + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_good);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.good);
+        }else if (numberCorrectAnswers == Math.round(questionsArray.size() * 0.8)){
+            int x = (int) Math.round(questionsArray.size() * 0.8);
+            System.out.println(x + " 0.8");
+            binding.includedFinish.scoreTxt.setText(x + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_good);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.good);
+        }else if (numberCorrectAnswers == Math.round(questionsArray.size() * 0.7)){
+            int x = (int) Math.round(questionsArray.size() * 0.7);
+            System.out.println(x + " 0.7");
+            binding.includedFinish.scoreTxt.setText(x + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_alright);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.alright);
+        }else if (numberCorrectAnswers == Math.round(questionsArray.size() * 0.6)){
+            int x = (int) Math.round(questionsArray.size() * 0.6);
+            System.out.println(x + " 0.6");
+            binding.includedFinish.scoreTxt.setText(x + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_alright);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.alright);
+        }else if (numberCorrectAnswers == Math.round(questionsArray.size() * 0.5)){
+            int x = (int) Math.round(questionsArray.size() * 0.5);
+            System.out.println(x + " 0.5");
+            binding.includedFinish.scoreTxt.setText(x + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_fail);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.fail);
+        }else if (numberCorrectAnswers == 0){
+            binding.includedFinish.scoreTxt.setText(0 + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_fail);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.fail);
+        }else{
+            binding.includedFinish.scoreTxt.setText(numberCorrectAnswers + "/" + questionsArray.size());
+            binding.includedFinish.scoreMessage.setText(R.string.quiz_fail);
+            binding.includedFinish.gifImageStatus.setImageResource(R.drawable.fail);
         }
     }
 

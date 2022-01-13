@@ -21,5 +21,10 @@
             android:id="@+id/nav_quiz"
             android:icon="@drawable/ic_menu_quiz"
             android:title="@string/menu_Quiz" />
+
+        <item
+            android:id="@+id/nav_sound"
+            android:icon="@drawable/ic_mic"
+            android:title="@string/all_might_soundpad"/>
     </group>
 </menu>

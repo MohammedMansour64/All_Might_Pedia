@@ -25,6 +25,16 @@
     <fragment
         android:id="@+id/nav_quiz"
         android:name="com.mohammedev.allmightpedia.ui.Quiz.QuizFragment"
-        android:label="@string/menu_Quiz"
-        tools:layout="@layout/quiz_fragment" />
+        android:label="@string/menu_Quiz">
+        <action
+            android:id="@+id/action_nav_quiz_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_sound"
+        android:name="com.mohammedev.allmightpedia.ui.SoundPad.SoundPadFragment"
+        android:label="@string/menu_sound"
+        tools:layout="@layout/sound_pad_fragment" />
 </navigation>
