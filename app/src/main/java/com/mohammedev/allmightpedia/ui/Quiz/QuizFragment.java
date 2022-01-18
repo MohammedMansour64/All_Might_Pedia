@@ -41,9 +41,7 @@ import java.util.Random;
 
 public class QuizFragment extends Fragment {
 
-    private QuizViewModel mViewModel;
-    private QuizQuestionLayoutBinding bindingSecond;
-    private FragmentQuizBinding binding;
+    public FragmentQuizBinding binding;
     private ArrayList<Question> questionsArray = new ArrayList<>();
     private ArrayList<String> answersArray = new ArrayList<>();
     public Button one, two, three, four;
@@ -55,17 +53,17 @@ public class QuizFragment extends Fragment {
     int oneClick = 0,twoClick = 0,threeClick = 0,fourClick = 0;
     ProgressBar progressBar;
 
-    public static QuizFragment newInstance() {
-        return new QuizFragment();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentQuizBinding.inflate(inflater, container, false);
-        bindingSecond = QuizQuestionLayoutBinding.inflate(inflater, container, false);
 
-        View root = binding.getRoot();
         one = binding.includedQuiz.answerOneBtn;
         two = binding.includedQuiz.answerTwoBtn;
         three = binding.includedQuiz.answerThreeBtn;
@@ -74,31 +72,20 @@ public class QuizFragment extends Fragment {
         questionCounter = binding.includedQuiz.questionCounter;
         progressBar = binding.progressBar;
 
-        binding.startQuiz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                fetchQuizData();
-            }
+        binding.startQuiz.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            fetchQuizData();
         });
 
-        binding.includedFinish.exitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(root).navigate(R.id.action_nav_quiz_to_nav_home);
-            }
-        });
+        binding.includedFinish.exitBtn.setOnClickListener(v -> Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_quiz_to_nav_home));
 
-        binding.includedFinish.playAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                questionsArray.clear();
-                numberCorrectAnswers = 0;
-                currentQuestion = 0;
-                nextQuestion = 0;
-                fetchQuizData();
-            }
+        binding.includedFinish.playAgain.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            questionsArray.clear();
+            numberCorrectAnswers = 0;
+            currentQuestion = 0;
+            nextQuestion = 0;
+            fetchQuizData();
         });
 
         one.setOnClickListener(v -> {
@@ -146,21 +133,15 @@ public class QuizFragment extends Fragment {
         });
 
 
-        binding.includedQuiz.nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextQuestion();
-            }
-        });
+        binding.includedQuiz.nextBtn.setOnClickListener(v -> nextQuestion());
 
-        return root;
+        return binding.getRoot();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(QuizViewModel.class);
-        // TODO: Use the ViewModel
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     public void fetchQuizData(){
@@ -170,7 +151,6 @@ public class QuizFragment extends Fragment {
         binding.textView5.setVisibility(View.GONE);
         binding.imageView.setVisibility(View.GONE);
         binding.includedFinish.getRoot().setVisibility(View.GONE);
-
 
         Query query = FirebaseDatabase.getInstance().getReference().child("quiz");
         query.addValueEventListener(new ValueEventListener() {

@@ -67,7 +67,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GalleryFragment extends Fragment {
-    private static final int STORAGE_PERMISSION_CODE = 101;
     private FragmentGalleryBinding binding;
     private FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
     FirebaseRecyclerAdapter adapter;
