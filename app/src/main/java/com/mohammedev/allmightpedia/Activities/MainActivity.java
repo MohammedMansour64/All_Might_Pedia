@@ -1,4 +1,4 @@
-package com.mohammedev.allmightpedia;
+package com.mohammedev.allmightpedia.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.databinding.ActivityMainBinding;
 import com.mohammedev.allmightpedia.ui.gallery.GalleryFragment;
 import com.mohammedev.allmightpedia.ui.home.HomeFragment;

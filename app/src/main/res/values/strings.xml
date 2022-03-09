@@ -20,4 +20,6 @@
     <string name="quiz_good">You did well! Stand Proud!</string>
     <string name="quiz_alright">You did Alright, but I expect more from my successor, you can try again anytime!</string>
     <string name="quiz_fail">You failed the exam, but no worries! you could always try again! go beyond, Plus Ultra!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
