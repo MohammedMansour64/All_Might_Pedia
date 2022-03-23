@@ -1,14 +1,17 @@
 package com.mohammedev.allmightpedia.ui.gallery;
 
 import android.app.DownloadManager;
+import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,12 +27,16 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Image;
 import com.mohammedev.allmightpedia.databinding.FragmentGalleryBinding;
 import com.mohammedev.allmightpedia.databinding.FragmentGalleryListBinding;
+import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.ViewSpaces;
 import com.squareup.picasso.Picasso;
 
@@ -56,6 +63,7 @@ public class GalleryFragmentList extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(GalleryFragmentList.this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new ViewSpaces(20));
         fetch();
+
 
         return root;
     }
@@ -103,6 +111,7 @@ public class GalleryFragmentList extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull GalleryFragmentList.GalleryListViewHolder viewHolder, int i, @NonNull Image image) {
+
                 Picasso.with(GalleryFragmentList.this.getContext()).load(image.getImageUrl()).into(viewHolder.image);
                 viewHolder.downloadBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -112,11 +121,22 @@ public class GalleryFragmentList extends Fragment {
                         downloading.execute(image.getImageUrl());
                     }
                 });
-
+                isFavourite(image.getImageUrl(), viewHolder.favoriteButton);
+                final boolean[] isFavourite = {false};
                 viewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if (isFavourite[0]){
+                            unFavouriteFun(image.getImageUrl());
+                            viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart);
+                        }else {
+                            Image image1 = new Image(image.getImageUrl());
+                            FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+                            DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
+                            dataBaseReference.push().setValue(image1);
+                            viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart_red);
+                        }
+                        isFavourite[0] = !isFavourite[0];
                     }
                 });
             }
@@ -126,6 +146,44 @@ public class GalleryFragmentList extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
+    }
+
+    private void unFavouriteFun(String imageUrl) {
+        FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+        DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
+        Query mQuery = dataBaseReference.orderByChild("imageUrl").equalTo(imageUrl);
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    dataSnapshot.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void isFavourite(String imageUrl , ImageButton imageButton){
+        FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+        DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
+        Query mQuery = dataBaseReference.orderByChild("imageUrl").equalTo(imageUrl);
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    imageButton.setImageResource(R.drawable.ic_heart_red);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public class Downloading extends AsyncTask<String, Integer, String> {

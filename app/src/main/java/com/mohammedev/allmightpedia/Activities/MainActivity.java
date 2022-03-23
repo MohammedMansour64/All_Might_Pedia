@@ -3,13 +3,15 @@ package com.mohammedev.allmightpedia.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,9 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.databinding.ActivityMainBinding;
-import com.mohammedev.allmightpedia.ui.gallery.GalleryFragment;
-import com.mohammedev.allmightpedia.ui.home.HomeFragment;
-import com.mohammedev.allmightpedia.ui.slideshow.SlideshowFragment;
+import com.mohammedev.allmightpedia.utils.CurrentUserData;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +51,40 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                if (CurrentUserData.USER_DATA != null){
+                    ImageView userImageNav = findViewById(R.id.user_image_nav);
+                    TextView userNameNav = findViewById(R.id.user_name_nav);
+                    userNameNav.setText("Welcome " + CurrentUserData.USER_DATA.getUserName() + "!");
+                    Picasso.with(MainActivity.this).load(CurrentUserData.USER_DATA.getImageUrl()).into(userImageNav);
+
+                    userNameNav.setVisibility(View.VISIBLE);
+                    findViewById(R.id.cardView2).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -59,6 +94,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this , RegisterActivity.class);
+                startActivity(intent);
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
