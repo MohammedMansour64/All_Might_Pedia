@@ -4,12 +4,15 @@ import android.app.DownloadManager;
 import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Activities.LoginActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Image;
 import com.mohammedev.allmightpedia.databinding.FragmentGalleryBinding;
@@ -116,7 +120,6 @@ public class GalleryFragmentList extends Fragment {
                 viewHolder.downloadBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        download(image.getImageUrl());
                         GalleryFragmentList.Downloading downloading = new GalleryFragmentList.Downloading();
                         downloading.execute(image.getImageUrl());
                     }
@@ -126,17 +129,33 @@ public class GalleryFragmentList extends Fragment {
                 viewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (isFavourite[0]){
-                            unFavouriteFun(image.getImageUrl());
-                            viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart);
-                        }else {
-                            Image image1 = new Image(image.getImageUrl());
-                            FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
-                            DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
-                            dataBaseReference.push().setValue(image1);
-                            viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart_red);
+                        if (CurrentUserData.USER_DATA != null) {
+
+
+                            if (isFavourite[0]) {
+                                unFavouriteFun(image.getImageUrl());
+                                viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart);
+                            } else {
+                                Image image1 = new Image(image.getImageUrl());
+                                FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+                                DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
+                                dataBaseReference.push().setValue(image1);
+                                viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart_red);
+                            }
+                            isFavourite[0] = !isFavourite[0];
+                        }else{
+                            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                                    .setTitle(R.string.sign_in_required_to_favourite)
+                                    .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent signInIntent = new Intent(getActivity() , LoginActivity.class);
+                                            startActivity(signInIntent);
+                                        }
+                                    }).show();
+
+                            alertDialog.create();
                         }
-                        isFavourite[0] = !isFavourite[0];
                     }
                 });
             }

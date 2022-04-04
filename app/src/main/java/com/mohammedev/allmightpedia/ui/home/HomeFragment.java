@@ -2,14 +2,12 @@ package com.mohammedev.allmightpedia.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +25,6 @@ import com.mohammedev.allmightpedia.Adapters.AdditionalInfoAdapter;
 import com.mohammedev.allmightpedia.data.InfoItem;
 import com.mohammedev.allmightpedia.databinding.FragmentHomeBinding;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
@@ -56,30 +53,30 @@ public class HomeFragment extends Fragment {
         additionalInfoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BackgroundTask backgroundTask;
                 switch (position){
                     case 0:
-                        BackgroundTask backgroundTask = new BackgroundTask();
+                        backgroundTask = new BackgroundTask("all_might_smashes");
                         backgroundTask.start();
-                      Toast.makeText(getContext(), "hi", Toast.LENGTH_SHORT).show();
                       break;
                   case 1:
-                        BackgroundTask2 backgroundTask2 = new BackgroundTask2();
-                        backgroundTask2.start();
-                      Toast.makeText(getContext(), "hi2", Toast.LENGTH_SHORT).show();
+                        backgroundTask = new BackgroundTask("all_might_hero_ages");
+                        backgroundTask.start();
                       break;
                   case 2:
-                        fetchInfoList("all_might_smashes");
-                      Toast.makeText(getContext(), "hi3", Toast.LENGTH_SHORT).show();
+                      backgroundTask = new BackgroundTask("all_might_fights");
+                      backgroundTask.start();
                       break;
                   case 3:
-                        fetchInfoList("all_might_smashes");
-                      Toast.makeText(getContext(), "hi4", Toast.LENGTH_SHORT).show();
+                      backgroundTask = new BackgroundTask("all_might_outfits");
+                      backgroundTask.start();
                       break;
                   case 4:
-                        fetchInfoList("all_might_smashes");
-                        Toast.makeText(getContext(), "hi5", Toast.LENGTH_SHORT).show();
+                      backgroundTask = new BackgroundTask("more_all_might");
+                      backgroundTask.start();
                         break;
                 }
+
             }
         });
 
@@ -131,25 +128,15 @@ public class HomeFragment extends Fragment {
     }
 
     class BackgroundTask extends Thread{
+        String infoType;
+        public BackgroundTask(String infoType) {
+            this.infoType = infoType;
+        }
+
         @Override
         public void run() {
-            fetchInfoList("all_might_smashes");
+            fetchInfoList(infoType);
         }
     }
-    class BackgroundTask2 extends Thread{
-        @Override
-        public void run() {
-            fetchInfoList("all_might_fights");
-        }
-    }
-    class BackgroundTask3 extends Thread{
-        @Override
-        public void run() {
-        }
-    }
-    class BackgroundTask4 extends Thread{
-        @Override
-        public void run() {
-        }
-    }
+
 }

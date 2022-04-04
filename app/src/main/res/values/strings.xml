@@ -32,4 +32,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="accessStorage">Access to storage is required to choose an image</string>
+    <string name="signOut">Sign Out</string>
+    <string name="sign_in_required_to_favourite">You Need to be signed In to be able to favourite an Image</string>
+    <string name="sign_in_required_to_show_favourites">You Need to be signed In to be able to show your favourite Images</string>
 </resources>

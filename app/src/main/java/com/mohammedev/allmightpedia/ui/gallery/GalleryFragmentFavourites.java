@@ -3,11 +3,14 @@ package com.mohammedev.allmightpedia.ui.gallery;
 import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Activities.LoginActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Image;
 import com.mohammedev.allmightpedia.databinding.FragmentGalleryFavouritesBinding;
@@ -57,8 +61,10 @@ public class GalleryFragmentFavourites extends Fragment {
         recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(GalleryFragmentFavourites.this.getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new ViewSpaces(20));
-        fetch();
 
+        if (CurrentUserData.USER_DATA != null){
+            fetch();
+        }
 
         return root;
     }
@@ -72,65 +78,80 @@ public class GalleryFragmentFavourites extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
+        if (CurrentUserData.USER_UID != "" || CurrentUserData.USER_DATA != null){
+            adapter.startListening();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if (CurrentUserData.USER_UID != "" || CurrentUserData.USER_DATA != null){
+            adapter.stopListening();
+        }
     }
 
 
     private void fetch() {
-        System.out.println(CurrentUserData.USER_UID);
-        Query query = FirebaseDatabase.getInstance().getReference().child("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
+        if (CurrentUserData.USER_UID != "" || CurrentUserData.USER_DATA != null) {
+            Query query = FirebaseDatabase.getInstance().getReference().child("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
 
-        FirebaseRecyclerOptions<Image> options = new FirebaseRecyclerOptions.Builder<Image>().setQuery(query, new SnapshotParser<Image>() {
-            @NonNull
-            @Override
-            public Image parseSnapshot(@NonNull DataSnapshot snapshot) {
-                return new Image(snapshot.child("imageUrl").getValue().toString());
-            }
-        }).build();
-
-
-        adapter = new FirebaseRecyclerAdapter<Image, GalleryFragmentFavourites.GalleryListViewHolder>(options) {
-
-            @NonNull
-            @Override
-            public GalleryFragmentFavourites.GalleryListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.gallery_favourite_item, parent, false);
-
-                return new GalleryFragmentFavourites.GalleryListViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull GalleryFragmentFavourites.GalleryListViewHolder viewHolder, int i, @NonNull Image image) {
-                Picasso.with(GalleryFragmentFavourites.this.getContext()).load(image.getImageUrl()).into(viewHolder.image);
-                viewHolder.downloadBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        download(image.getImageUrl());
-                        GalleryFragmentFavourites.Downloading downloading = new GalleryFragmentFavourites.Downloading();
-                        downloading.execute(image.getImageUrl());
-                    }
-                });
-
-                viewHolder.unFavoriteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        unFavouriteFun(image.getImageUrl());
-                        notifyDataSetChanged();
-                    }
-                });
-            }
-
-        };
-        recyclerView.setAdapter(adapter);
+            FirebaseRecyclerOptions<Image> options = new FirebaseRecyclerOptions.Builder<Image>().setQuery(query, new SnapshotParser<Image>() {
+                @NonNull
+                @Override
+                public Image parseSnapshot(@NonNull DataSnapshot snapshot) {
+                    return new Image(snapshot.child("imageUrl").getValue().toString());
+                }
+            }).build();
 
 
+            adapter = new FirebaseRecyclerAdapter<Image, GalleryFragmentFavourites.GalleryListViewHolder>(options) {
+
+                @NonNull
+                @Override
+                public GalleryFragmentFavourites.GalleryListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.gallery_favourite_item, parent, false);
+
+                    return new GalleryFragmentFavourites.GalleryListViewHolder(view);
+                }
+
+                @Override
+                protected void onBindViewHolder(@NonNull GalleryFragmentFavourites.GalleryListViewHolder viewHolder, int i, @NonNull Image image) {
+                    Picasso.with(GalleryFragmentFavourites.this.getContext()).load(image.getImageUrl()).into(viewHolder.image);
+                    viewHolder.downloadBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            GalleryFragmentFavourites.Downloading downloading = new GalleryFragmentFavourites.Downloading();
+                            downloading.execute(image.getImageUrl());
+                        }
+                    });
+
+                    viewHolder.unFavoriteButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            unFavouriteFun(image.getImageUrl());
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+
+            };
+            recyclerView.setAdapter(adapter);
+
+        }else{
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.sign_in_required_to_show_favourites)
+                    .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent signInIntent = new Intent(getActivity() , LoginActivity.class);
+                            startActivity(signInIntent);
+                        }
+                    }).show();
+
+            alertDialog.create();
+        }
     }
 
     private void unFavouriteFun(String imageUrl) {

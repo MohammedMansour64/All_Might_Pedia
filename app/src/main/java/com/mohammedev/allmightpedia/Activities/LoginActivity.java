@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button signBtn;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
     private void signIn(){
-
         mAuth.signInWithEmailAndPassword(emailEdt.getText().toString().trim(), passwordEdt.getText().toString().trim())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -71,26 +71,25 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             CurrentUserData.USER_UID = user.getUid();
-                            databaseReference.child("users").child(CurrentUserData.USER_UID).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    User user = snapshot.getValue(User.class);
-                                    CurrentUserData.USER_DATA = user;
-                                    Toast.makeText(LoginActivity.this, "Welcome " + user.getUserName(), Toast.LENGTH_SHORT).show();
-                                }
 
+                            databaseReference.child("users").child(CurrentUserData.USER_UID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
+                                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                    if (task.isSuccessful()){
+                                        User user1 = task.getResult().getValue(User.class);
+                                        CurrentUserData.USER_DATA = user1;
+                                        Toast.makeText(LoginActivity.this, "Welcome " + user1.getUserName() , Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
+
+                            Intent backToMain = new Intent(LoginActivity.this , MainActivity.class);
+                            startActivity(backToMain);
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.v("signInWithEmail:failure " , String.valueOf(task.getException()));
                         }
-
-
                     }
                 });
     }
