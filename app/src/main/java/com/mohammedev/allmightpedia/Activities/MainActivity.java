@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity{
     private NavigationView navigationView;
     private MenuItem menuItem;
     private FirebaseUser user;
+
 
 
     @Override
@@ -90,7 +92,8 @@ public class MainActivity extends AppCompatActivity{
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_quiz , R.id.nav_sound)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_quiz
+                , R.id.nav_sound , R.id.nav_chat)
                 .setOpenableLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

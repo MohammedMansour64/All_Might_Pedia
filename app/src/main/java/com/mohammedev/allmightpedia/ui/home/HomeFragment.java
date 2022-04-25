@@ -53,27 +53,29 @@ public class HomeFragment extends Fragment {
         additionalInfoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BackgroundTask backgroundTask;
+                Intent listActivityIntent = new Intent(getActivity() , InfoListActivity.class);
                 switch (position){
                     case 0:
-                        backgroundTask = new BackgroundTask("all_might_smashes");
-                        backgroundTask.start();
+                        listActivityIntent.putExtra("infoType" , "all_might_smashes");
+                        startActivity(listActivityIntent);
+
                       break;
                   case 1:
-                        backgroundTask = new BackgroundTask("all_might_hero_ages");
-                        backgroundTask.start();
+                      listActivityIntent.putExtra("infoType" , "all_might_hero_ages");
+                      startActivity(listActivityIntent);
                       break;
                   case 2:
-                      backgroundTask = new BackgroundTask("all_might_fights");
-                      backgroundTask.start();
+                      listActivityIntent.putExtra("infoType" , "all_might_fights");
+                      startActivity(listActivityIntent);
+
                       break;
                   case 3:
-                      backgroundTask = new BackgroundTask("all_might_outfits");
-                      backgroundTask.start();
+                      listActivityIntent.putExtra("infoType" , "all_might_outfits");
+                      startActivity(listActivityIntent);
                       break;
                   case 4:
-                      backgroundTask = new BackgroundTask("more_all_might");
-                      backgroundTask.start();
+                      listActivityIntent.putExtra("infoType" , "more_all_might");
+                      startActivity(listActivityIntent);
                         break;
                 }
 
@@ -105,38 +107,6 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    public void fetchInfoList(String listName){
-        Query query = FirebaseDatabase.getInstance().getReference().child("additionalInfo").child(listName);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                infoItemList.clear();
-                for (DataSnapshot infoItem: snapshot.getChildren()){
-                    InfoItem infoItem1 = infoItem.getValue(InfoItem.class);
-                    infoItemList.add(infoItem1);
-                }
-                Intent listIntent = new Intent(getActivity(), InfoListActivity.class);
-                listIntent.putParcelableArrayListExtra("infoItemList", infoItemList);
-                startActivity(listIntent);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println("There was an error:" + error.getDetails());
-            }
-        });
-    }
-
-    class BackgroundTask extends Thread{
-        String infoType;
-        public BackgroundTask(String infoType) {
-            this.infoType = infoType;
-        }
-
-        @Override
-        public void run() {
-            fetchInfoList(infoType);
-        }
-    }
 
 }

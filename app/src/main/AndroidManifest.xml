@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AllMightPedia"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activities.AddNewPostActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.DetailsActivity"
             android:exported="false" />
         <activity

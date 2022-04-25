@@ -37,4 +37,14 @@
         android:name="com.mohammedev.allmightpedia.ui.SoundPad.SoundPadFragment"
         android:label="@string/menu_sound"
         tools:layout="@layout/sound_pad_fragment" />
+    <fragment
+        android:id="@+id/nav_chat"
+        android:name="com.mohammedev.allmightpedia.ui.chat.ChatFragment"
+        android:label="@string/menu_chat"
+        tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/nav_art"
+        android:name="com.mohammedev.allmightpedia.ui.fansArt.FansArtFragment"
+        android:label="@string/fanArtTab"
+        tools:layout="@layout/fragment_fans_art" />
 </navigation>

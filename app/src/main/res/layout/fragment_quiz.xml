@@ -31,7 +31,7 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/text_style"
         android:fontFamily="@font/cairo_bold"
-        android:text="IF YES, THEN SMASH THAT START BUTTON! GO BEYOND, PLUS ULTRA!"
+        android:text="IF YES, THEN SMASH THAT START BUTTON! AND GO BEYOND!"
         android:textAlignment="center"
         android:textColor="#042F9C"
         android:textColorHighlight="#4C0000"

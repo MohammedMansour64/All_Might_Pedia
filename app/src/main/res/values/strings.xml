@@ -35,4 +35,10 @@
     <string name="signOut">Sign Out</string>
     <string name="sign_in_required_to_favourite">You Need to be signed In to be able to favourite an Image</string>
     <string name="sign_in_required_to_show_favourites">You Need to be signed In to be able to show your favourite Images</string>
+    <string name="live_chat">Live Chat</string>
+    <string name="menu_chat">Chat</string>
+    <string name="sign_in_required_to_send_messages">You need to be signed in to be able to send messages</string>
+    <string name="sign_in_required">Sign In Required</string>
+    <string name="fanArtTab">Fans Art</string>
+    <string name="sign_in_required_to_upload_posts">you need to be signed in to be able to post a fan art</string>
 </resources>

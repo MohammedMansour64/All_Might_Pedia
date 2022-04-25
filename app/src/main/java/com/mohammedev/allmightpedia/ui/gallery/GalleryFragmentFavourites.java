@@ -141,7 +141,8 @@ public class GalleryFragmentFavourites extends Fragment {
 
         }else{
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                    .setTitle(R.string.sign_in_required_to_show_favourites)
+                    .setTitle(R.string.sign_in_required)
+                    .setMessage(R.string.sign_in_required_to_show_favourites)
                     .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

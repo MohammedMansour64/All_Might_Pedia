@@ -14,8 +14,10 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/text_style.xml" value="0.30833333333333335" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/font/cairo_bold.xml" value="0.3037037037037037" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout-v26/fragment_quiz.xml" value="0.25" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout-v28/chat_message_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout-w1240dp/activity_sign_in_sign_up.xml" value="0.1" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout-w936dp/activity_sign_in_sign_up.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_add_new_post.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_addimage.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_details.xml" value="0.2" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_info_list.xml" value="0.36666666666666664" />
@@ -27,7 +29,11 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_sign_in_up.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/additional_info_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/app_bar_main.xml" value="0.5" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/art_post_layout.xml" value="0.33" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/chat_message_layout.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/content_main.xml" value="0.245018115942029" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_chat.xml" value="0.3009833262077811" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_fans_art.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_gallery.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_gallery_favourites.xml" value="0.3611111111111111" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_gallery_list.xml" value="0.36666666666666664" />
@@ -50,6 +56,7 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/sound_button_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/sound_pad_fragment.xml" value="0.275" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/activity_main_drawer.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/fan_art_bottom_nav_menu.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/main.xml" value="0.25" />
       </map>
     </option>
