@@ -1,5 +1,9 @@
 package com.mohammedev.allmightpedia.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String userName, userBio , imageUrl , email;
 
@@ -11,14 +15,19 @@ public class User {
         this.email = email;
     }
 
-    public User(String name, String userBio , String imageUrl) {
-        this.userName = name;
+    public User(String userName, String userBio, String imageUrl, String email, ArrayList<FanArtPost> posts) {
+        this.userName = userName;
         this.userBio = userBio;
         this.imageUrl = imageUrl;
+        this.email = email;
     }
+
+
 
     public User() {
     }
+
+
 
     public String getEmail() {
         return email;

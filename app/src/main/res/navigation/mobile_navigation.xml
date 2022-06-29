@@ -47,4 +47,9 @@
         android:name="com.mohammedev.allmightpedia.ui.fansArt.FansArtFragment"
         android:label="@string/fanArtTab"
         tools:layout="@layout/fragment_fans_art" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.mohammedev.allmightpedia.ui.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

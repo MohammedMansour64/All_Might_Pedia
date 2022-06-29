@@ -1,11 +1,13 @@
 package com.mohammedev.allmightpedia.ui.fansArt;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mohammedev.allmightpedia.Activities.AddNewPostActivity;
 import com.mohammedev.allmightpedia.Activities.LoginActivity;
 import com.mohammedev.allmightpedia.Adapters.FanArtAdapter;
+import com.mohammedev.allmightpedia.Adapters.HighlightedPostsAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
@@ -28,11 +31,13 @@ import com.mohammedev.allmightpedia.utils.ViewSpaces;
 
 import java.util.ArrayList;
 
-public class FansArtFragment extends Fragment {
+
+public class FansArtFragment extends Fragment{
 
     FanArtAdapter fanArtAdapter;
     ArrayList<FanArtPost> fanPostsList = new ArrayList<>();
     FloatingActionButton fabNewPost;
+    ConstraintLayout constraintLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,74 +45,58 @@ public class FansArtFragment extends Fragment {
 
         fabNewPost = view.findViewById(R.id.add_new_post_fab);
 
-        fabNewPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (CurrentUserData.USER_UID != "" || CurrentUserData.USER_DATA != null){
-                    Intent newPostIntent = new Intent(getActivity(), AddNewPostActivity.class);
-                    startActivity(newPostIntent);
-                }else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                            .setTitle(R.string.sign_in_required)
-                            .setMessage(R.string.sign_in_required_to_upload_posts)
-                            .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent signInIntent = new Intent(getActivity() , LoginActivity.class);
-                                    startActivity(signInIntent);
-                                    getActivity().finish();
-                                }
-                            }).show();
+        fabNewPost.setOnClickListener(v -> {
+            if (!CurrentUserData.USER_UID.equals("") || CurrentUserData.USER_DATA != null){
+                Intent newPostIntent = new Intent(getActivity(), AddNewPostActivity.class);
+                startActivity(newPostIntent);
+            }else {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.sign_in_required)
+                        .setMessage(R.string.sign_in_required_to_upload_posts)
+                        .setPositiveButton("Sign in", (dialog, which) -> {
+                            Intent signInIntent = new Intent(getActivity() , LoginActivity.class);
+                            startActivity(signInIntent);
+                            requireActivity().finish();
+                        }).show();
 
-                    alertDialog.create();
-                }
-
+                alertDialog.create();
             }
+
         });
 
         if (CurrentUserData.USER_DATA != null){
             fanPostsList.add(new FanArtPost("Mohammed Mansour" , CurrentUserData.USER_DATA.getImageUrl() , CurrentUserData.USER_DATA.getImageUrl()
-                    , true , 15));
+                    , true , "15" , "0"));
             fanPostsList.add(new FanArtPost("Mohammed Mansour" , CurrentUserData.USER_DATA.getImageUrl() , CurrentUserData.USER_DATA.getImageUrl()
-                    , true , 15));
+                    , true , "15" , "0"));
             fanPostsList.add(new FanArtPost("Mohammed Mansour" , CurrentUserData.USER_DATA.getImageUrl() , CurrentUserData.USER_DATA.getImageUrl()
-                    , true , 15));
+                    , true , "15" , "0"));
             fanPostsList.add(new FanArtPost("Mohammed Mansour" , CurrentUserData.USER_DATA.getImageUrl() , CurrentUserData.USER_DATA.getImageUrl()
-                    , true , 15));
+                    , true , "15" , "0"));
             fanPostsList.add(new FanArtPost("Mohammed Mansour" , CurrentUserData.USER_DATA.getImageUrl() , CurrentUserData.USER_DATA.getImageUrl()
-                    , true , 15));
+                    , true , "15" , "0"));
         }
 
 
 
-        ObservableRecyclerView observableRecyclerView = view.findViewById(R.id.feedRecyclerView);
-
-        observableRecyclerView.setScrollViewCallbacks(new ObservableScrollViewCallbacks() {
-            @Override
-            public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-
-            }
-
-            @Override
-            public void onDownMotionEvent() {
-
-            }
-
-            @Override
-            public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
-            }
-        });
+        RecyclerView feedRecyclerView = view.findViewById(R.id.feedRecyclerView);
+        RecyclerView highlightRecyclerView = view.findViewById(R.id.highlighted_arts_recyclerView);
 
         fanArtAdapter = new FanArtAdapter(fanPostsList, getContext());
+        HighlightedPostsAdapter highlightedPostsAdapter = new HighlightedPostsAdapter(fanPostsList, getContext());
 
-        observableRecyclerView.setAdapter(fanArtAdapter);
-        observableRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        observableRecyclerView.addItemDecoration(new ViewSpaces(20));
+        feedRecyclerView.setAdapter(fanArtAdapter);
+        feedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        feedRecyclerView.addItemDecoration(new ViewSpaces(20));
+        feedRecyclerView.setNestedScrollingEnabled(false);
 
+        highlightRecyclerView.setAdapter(highlightedPostsAdapter);
+        highlightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        highlightRecyclerView.addItemDecoration(new ViewSpaces(20));
+
+        constraintLayout = view.findViewById(R.id.constraintLayout);
 
         return view;
     }
-
 
 }

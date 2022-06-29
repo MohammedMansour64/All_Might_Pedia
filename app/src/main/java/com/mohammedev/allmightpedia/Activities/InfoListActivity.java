@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -48,15 +47,12 @@ public class InfoListActivity extends AppCompatActivity {
         listView.setAdapter(infoListAdapter);
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                InfoItem clickedItem = infoItemList.get(position);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            InfoItem clickedItem = infoItemList.get(position);
 
-                Intent detailsIntent = new Intent(InfoListActivity.this , DetailsActivity.class);
-                detailsIntent.putExtra("infoItem" , clickedItem);
-                startActivity(detailsIntent);
-            }
+            Intent detailsIntent = new Intent(InfoListActivity.this , DetailsActivity.class);
+            detailsIntent.putExtra("infoItem" , clickedItem);
+            startActivity(detailsIntent);
         });
 
     }

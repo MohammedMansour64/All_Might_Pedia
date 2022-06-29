@@ -15,8 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -33,79 +32,89 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.R;
+import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
 import com.mohammedev.allmightpedia.databinding.ActivityMainBinding;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
-    private NavController navController;
-    private FirebaseAuth mAuth;
-    private DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
 
     private DrawerLayout drawer;
-    private NavigationView navigationView;
-    private MenuItem menuItem;
-    private FirebaseUser user;
 
+    ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        com.mohammedev.allmightpedia.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
         drawer = binding.drawerLayout;
-        navigationView = binding.navView;
-        navigationView.getMenu().findItem(R.id.nav_signOut).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        NavigationView navigationView = binding.navView;
+        navigationView.getMenu().findItem(R.id.nav_signOut).setOnMenuItemClickListener(item -> {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+
+            AuthUI.getInstance()
+                    .signOut(MainActivity.this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    CurrentUserData.USER_DATA = null;
+                    CurrentUserData.USER_UID = "";
+                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+                    Toast.makeText(MainActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+            return true;
+        });
+
+        navigationView.getMenu().findItem(R.id.nav_profile).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
+                if (CurrentUserData.USER_DATA == null){
+                    Intent intent = new Intent(MainActivity.this , LoginActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
-
-                AuthUI.getInstance()
-                        .signOut(MainActivity.this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        CurrentUserData.USER_DATA = null;
-                        CurrentUserData.USER_UID = "";
-                        startActivity(new Intent(MainActivity.this, MainActivity.class));
-                        Toast.makeText(MainActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
-                return true;
+                return false;
             }
         });
 
         Menu navMenu = navigationView.getMenu();
-        menuItem = navMenu.findItem(R.id.nav_signOut);
+        MenuItem menuItem = navMenu.findItem(R.id.nav_signOut);
 
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_quiz
-                , R.id.nav_sound , R.id.nav_chat)
+                , R.id.nav_sound , R.id.nav_chat , R.id.nav_profile , R.id.nav_art)
                 .setOpenableLayout(drawer)
                 .build();
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+
 
         if (user !=null){
+            CurrentUserData.USER_UID = user.getUid();
             menuItem.setEnabled(true);
             getUserData(user.getUid());
             drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -138,7 +147,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             });
         }else{
-            //TODO: if user is not logged in make the nav_signOut menu item disabled.
             menuItem.setEnabled(false);
         }
 
@@ -152,6 +160,32 @@ public class MainActivity extends AppCompatActivity{
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 CurrentUserData.USER_DATA = user;
+
+                for (int i = 0; i < fanArtPostArrayList.size(); i++){
+                    fanArtPostArrayList.get(i).setUserName(CurrentUserData.USER_DATA.getUserName());
+                    fanArtPostArrayList.get(i).setUserImageUrl(CurrentUserData.USER_DATA.getImageUrl());
+
+                }
+                CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        databaseReference.child("users").child(userUID).child("posts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()){
+                    if (data != null){
+                        FanArtPost fanArtPost = data.getValue(FanArtPost.class);
+                        fanArtPostArrayList.add(fanArtPost);
+                    }
+                }
+
+
             }
 
             @Override
@@ -171,11 +205,9 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_settings:
-                Intent intent = new Intent(MainActivity.this , RegisterActivity.class);
-                startActivity(intent);
-                break;
+        if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

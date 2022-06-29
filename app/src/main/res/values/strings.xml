@@ -41,4 +41,7 @@
     <string name="sign_in_required">Sign In Required</string>
     <string name="fanArtTab">Fans Art</string>
     <string name="sign_in_required_to_upload_posts">you need to be signed in to be able to post a fan art</string>
+    <string name="username">\@shalia.kwt@outlook.com</string>
+    <string name="profile">Profile</string>
+    <string name="main">Main</string>
 </resources>

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/actor</item>
+        <item>@font/actor4</item>
         <item>@font/anton</item>
+        <item>@font/basic</item>
         <item>@font/cairo_bold</item>
         <item>@font/fjalla_one</item>
     </array>
