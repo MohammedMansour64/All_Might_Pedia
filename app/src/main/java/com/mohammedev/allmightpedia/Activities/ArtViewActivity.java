@@ -20,8 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Adapters.PostsAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
+import com.mohammedev.allmightpedia.ui.profile.ProfileFragment;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.DoubleClickListener;
 import com.squareup.picasso.Picasso;
@@ -58,16 +60,19 @@ public class ArtViewActivity extends AppCompatActivity {
 
         fanArtPost = (FanArtPost) bundle.getSerializable("Post");
 
-        Toast.makeText(this, CurrentUserData.USER_UID, Toast.LENGTH_SHORT).show();
 
         postUserNameTxt.setText(fanArtPost.getUserName());
         Picasso.with(this).load(fanArtPost.getUserImageUrl()).into(postUserImage);
         Picasso.with(this).load(fanArtPost.getPostImageUrl()).into(postImage);
 
-        likeCounter = Integer.parseInt(fanArtPost.getLikeCounter());
+        likeCounter = fanArtPost.getLikeCounter();
 
         likeCounterTxt.setText(String.valueOf(likeCounter));
         likeButton = fanArtPost.isLikeButton();
+
+        if (likeButton){
+            likeImage.setImageResource(R.drawable.ic_heart_red);
+        }
 
 
 
@@ -76,18 +81,20 @@ public class ArtViewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (likeButton){
                     likeCounter--;
-                    fanArtPost.setLikeCounter(String.valueOf(likeCounter));
+                    fanArtPost.setLikeCounter(likeCounter);
                     likeImage.setImageResource(R.drawable.ic_heart);
                     likeCounterTxt.setText(String.valueOf(likeCounter));
-                    updateLikes();
                     likeButton = false;
+                    updateLikes();
+
                 }else if (!likeButton){
                     likeCounter++;
                     likeImage.setImageResource(R.drawable.ic_heart_red);
-                    fanArtPost.setLikeCounter(String.valueOf(likeCounter));
+                    fanArtPost.setLikeCounter(likeCounter);
                     likeCounterTxt.setText(String.valueOf(likeCounter));
-                    updateLikes();
                     likeButton = true;
+                    updateLikes();
+
 
                 }
             }
@@ -106,7 +113,7 @@ public class ArtViewActivity extends AppCompatActivity {
                 if (!likeButton){
                     likeCounter++;
                     likeImage.setImageResource(R.drawable.ic_heart_red);
-                    fanArtPost.setLikeCounter(String.valueOf(likeCounter));
+                    fanArtPost.setLikeCounter(likeCounter);
                     likeCounterTxt.setText(String.valueOf(likeCounter));
                     updateLikes();
                     likeButton = true;
@@ -138,6 +145,10 @@ public class ArtViewActivity extends AppCompatActivity {
             System.out.println("UID: " + userUID + " imageID: " + fanArtPost.getImageID());
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageUID);
             dataBaseReference.child("likeCounter").setValue(likeCounter);
+
+            dataBase.getReference("users").child(userUID).child("posts").child(imageUID).child("likeButton").setValue(likeButton);
+            Toast.makeText(this, String.valueOf(likeButton), Toast.LENGTH_SHORT).show();
+
         }
 
     }

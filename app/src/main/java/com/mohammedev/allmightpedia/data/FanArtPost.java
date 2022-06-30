@@ -10,10 +10,13 @@ public class FanArtPost implements Serializable {
     private String userImageUrl;
     private String postImageUrl;
     private boolean likeButton;
-    private String likeCounter;
+    private int likeCounter;
     private String imageID;
 
-    public FanArtPost(String userName, String userImage, String postImage, boolean likeButton, String likeCounter, String imageID) {
+    public FanArtPost() {
+    }
+
+    public FanArtPost(String userName, String userImage, String postImage, boolean likeButton, int likeCounter, String imageID) {
         this.userName = userName;
         this.userImageUrl = userImage;
         this.postImageUrl = postImage;
@@ -23,25 +26,20 @@ public class FanArtPost implements Serializable {
     }
 
 
-    public FanArtPost(String postImageUrl , boolean likeButton , String likeCounter, String imageID){
+    public FanArtPost(String postImageUrl , boolean likeButton , int likeCounter, String imageID){
         this.postImageUrl = postImageUrl;
         this.likeButton = likeButton;
         this.likeCounter = likeCounter;
         this.imageID = imageID;
     }
 
-    public FanArtPost(){
-
+    public int getLikeCounter() {
+        return likeCounter;
     }
 
-    protected FanArtPost(Parcel in) {
-        userName = in.readString();
-        userImageUrl = in.readString();
-        postImageUrl = in.readString();
-        likeButton = in.readByte() != 0;
-        likeCounter = in.readString();
+    public void setLikeCounter(int likeCounter) {
+        this.likeCounter = likeCounter;
     }
-
 
     public String getImageID() {
         return imageID;
@@ -82,14 +80,6 @@ public class FanArtPost implements Serializable {
 
     public void setLikeButton(boolean likeButton) {
         this.likeButton = likeButton;
-    }
-
-    public String getLikeCounter() {
-        return likeCounter;
-    }
-
-    public void setLikeCounter(String likeCounter) {
-        this.likeCounter = likeCounter;
     }
 
     @Override

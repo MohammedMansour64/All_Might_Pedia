@@ -92,7 +92,7 @@ public class AddNewPostActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         reference = database.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts");
                         String imageID = reference.push().getKey();
-                        FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , false , "0" , imageID);
+                        FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , false , 0 , imageID);
                         System.out.println(imageID);
                         reference.child(imageID).setValue(fanArtPost);
                         finish();

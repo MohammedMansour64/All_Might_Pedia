@@ -20,8 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHolder> {
-    private final ArrayList<FanArtPost> postArrayList;
+    public ArrayList<FanArtPost> postArrayList;
     private final Context context;
+
 
     public PostsAdapter(ArrayList<FanArtPost> postArrayList , Context context) {
         this.postArrayList = postArrayList;
@@ -63,5 +64,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
 
         }
 
+    }
+
+    public void updateList(ArrayList<FanArtPost> fanArtPosts){
+        postArrayList.clear();
+        postArrayList.addAll(fanArtPosts);
+        notifyDataSetChanged();
     }
 }

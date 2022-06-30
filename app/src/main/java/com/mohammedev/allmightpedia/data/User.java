@@ -5,21 +5,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User {
-    private String userName, userBio , imageUrl , email;
+    private String userName, userBio , imageUrl , email, userID;
 
 
-    public User(String name, String userBio , String imageUrl , String email) {
-        this.userName = name;
-        this.userBio = userBio;
-        this.imageUrl = imageUrl;
-        this.email = email;
-    }
 
-    public User(String userName, String userBio, String imageUrl, String email, ArrayList<FanArtPost> posts) {
+    public User(String userName, String userBio, String imageUrl, String email, String userID) {
         this.userName = userName;
         this.userBio = userBio;
         this.imageUrl = imageUrl;
         this.email = email;
+        this.userID = userID;
     }
 
 
@@ -27,7 +22,13 @@ public class User {
     public User() {
     }
 
+    public String getUserID() {
+        return userID;
+    }
 
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 
     public String getEmail() {
         return email;

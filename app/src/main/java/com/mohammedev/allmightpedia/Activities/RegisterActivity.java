@@ -50,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
     StorageReference storageReference;
     DatabaseReference databaseReference;
     FirebaseAuth mAuth;
+    FirebaseUser user;
 
     Uri imageUri;
     @Override
@@ -160,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
-                                FirebaseUser user = mAuth.getCurrentUser();
+                                user = mAuth.getCurrentUser();
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(RegisterActivity.this, "Authentication failed.",
@@ -188,12 +189,17 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()){
+                        String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
                         Uri finishedUri = task.getResult();
                         User userRegisteredData = new User (userName.getText().toString().trim(),
                                 "",
                                 finishedUri.toString(),
-                                userEmail.getText().toString().trim());
-                        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                userEmail.getText().toString().trim()
+                        , userUID);
+
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userUID);
                         databaseReference.setValue(userRegisteredData);
 
                         startActivity(new Intent(RegisterActivity.this , LoginActivity.class));
