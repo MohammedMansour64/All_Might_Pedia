@@ -105,6 +105,32 @@ public class FansArtFragment extends Fragment{
                 for (DataSnapshot users: snapshot.getChildren()){
                     userList.add(users.getValue(User.class));
                 }
+
+                if (userList.size() > 1){
+                    for (int i = 0; i < userList.size(); i++){
+                        Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
+                                .child(userList.get(i).getUserID()).child("posts");
+
+                        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot posts: snapshot.getChildren()){
+                                    fanPostsList.add(posts.getValue(FanArtPost.class));
+                                }
+                                Toast.makeText(getContext(), fanPostsList.get(0).getUserImageUrl(), Toast.LENGTH_SHORT).show();
+                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext());
+                                feedRecyclerView.setAdapter(fanArtAdapter);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }else {
+                    Toast.makeText(getContext(), "Still no data", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -113,31 +139,7 @@ public class FansArtFragment extends Fragment{
             }
         });
 
-        if (userList.size() > 1){
-            for (int i = 0; i < userList.size(); i++){
-                Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
-                        .child(userList.get(i).getUserID()).child("posts");
 
-                userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot posts: snapshot.getChildren()){
-                            fanPostsList.add(posts.getValue(FanArtPost.class));
-                        }
-                        Toast.makeText(getContext(), fanPostsList.get(0).getUserImageUrl(), Toast.LENGTH_SHORT).show();
-                        fanArtAdapter = new FanArtAdapter(fanPostsList, getContext());
-                        feedRecyclerView.setAdapter(fanArtAdapter);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            }
-        }else {
-            Toast.makeText(getContext(), "Still no data", Toast.LENGTH_SHORT).show();
-        }
 
     }
 
