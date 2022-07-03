@@ -73,10 +73,6 @@ public class FansArtFragment extends Fragment{
 
         });
 
-
-
-
-
         feedRecyclerView = view.findViewById(R.id.feedRecyclerView);
         RecyclerView highlightRecyclerView = view.findViewById(R.id.highlighted_arts_recyclerView);
 
@@ -114,10 +110,12 @@ public class FansArtFragment extends Fragment{
                         userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                                 for (DataSnapshot posts: snapshot.getChildren()){
-                                    fanPostsList.add(posts.getValue(FanArtPost.class));
+                                    FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
+                                    fanPostsList.add(fanArtPost);
                                 }
-                                Toast.makeText(getContext(), fanPostsList.get(0).getUserImageUrl(), Toast.LENGTH_SHORT).show();
+
                                 fanArtAdapter = new FanArtAdapter(fanPostsList, getContext());
                                 feedRecyclerView.setAdapter(fanArtAdapter);
                             }
@@ -128,8 +126,6 @@ public class FansArtFragment extends Fragment{
                             }
                         });
                     }
-                }else {
-                    Toast.makeText(getContext(), "Still no data", Toast.LENGTH_SHORT).show();
                 }
             }
 

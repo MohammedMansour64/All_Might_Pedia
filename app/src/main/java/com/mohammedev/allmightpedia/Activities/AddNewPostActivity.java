@@ -32,9 +32,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
+import com.mohammedev.allmightpedia.data.User;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AddNewPostActivity extends AppCompatActivity {
     private static final int PERMISSIONS_READ_EXTERNAL_STORAGE = 123;
@@ -90,9 +94,11 @@ public class AddNewPostActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
+                        User user = CurrentUserData.USER_DATA;
                         reference = database.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts");
                         String imageID = reference.push().getKey();
-                        FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , false , 0 , imageID);
+                        LinkedList<String> linkedList = new LinkedList<>();
+                        FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , false , 0 , imageID , user.getUserName() , user.getImageUrl() ,linkedList);
                         System.out.println(imageID);
                         reference.child(imageID).setValue(fanArtPost);
                         finish();

@@ -160,13 +160,6 @@ public class MainActivity extends AppCompatActivity{
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 CurrentUserData.USER_DATA = user;
-
-                for (int i = 0; i < fanArtPostArrayList.size(); i++){
-                    fanArtPostArrayList.get(i).setUserName(CurrentUserData.USER_DATA.getUserName());
-                    fanArtPostArrayList.get(i).setUserImageUrl(CurrentUserData.USER_DATA.getImageUrl());
-
-                }
-                CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
             }
 
             @Override
@@ -183,8 +176,8 @@ public class MainActivity extends AppCompatActivity{
                         FanArtPost fanArtPost = data.getValue(FanArtPost.class);
                         fanArtPostArrayList.add(fanArtPost);
                     }
+                    CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
                 }
-
 
             }
 

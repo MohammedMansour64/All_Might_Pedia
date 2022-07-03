@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FanArtPost implements Serializable {
     private String userName;
@@ -12,25 +14,28 @@ public class FanArtPost implements Serializable {
     private boolean likeButton;
     private int likeCounter;
     private String imageID;
+    private LinkedList<String> likes;
 
     public FanArtPost() {
     }
 
-    public FanArtPost(String userName, String userImage, String postImage, boolean likeButton, int likeCounter, String imageID) {
+    public FanArtPost( String postImage, boolean likeButton, int likeCounter, String imageID , String userName, String userImage, LinkedList<String> likes) {
         this.userName = userName;
         this.userImageUrl = userImage;
         this.postImageUrl = postImage;
         this.likeButton = likeButton;
         this.likeCounter = likeCounter;
         this.imageID = imageID;
+        this.likes = likes;
     }
 
 
-    public FanArtPost(String postImageUrl , boolean likeButton , int likeCounter, String imageID){
-        this.postImageUrl = postImageUrl;
-        this.likeButton = likeButton;
-        this.likeCounter = likeCounter;
-        this.imageID = imageID;
+    public LinkedList<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(LinkedList<String> likes) {
+        this.likes = likes;
     }
 
     public int getLikeCounter() {

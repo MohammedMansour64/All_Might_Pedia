@@ -58,68 +58,64 @@ public class ArtViewActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        fanArtPost = (FanArtPost) bundle.getSerializable("Post");
+        if (bundle != null) {
+            fanArtPost = (FanArtPost) bundle.getSerializable("Post");
 
 
-        postUserNameTxt.setText(fanArtPost.getUserName());
-        Picasso.with(this).load(fanArtPost.getUserImageUrl()).into(postUserImage);
-        Picasso.with(this).load(fanArtPost.getPostImageUrl()).into(postImage);
+            postUserNameTxt.setText(fanArtPost.getUserName());
+            Picasso.with(this).load(fanArtPost.getUserImageUrl()).into(postUserImage);
+            Picasso.with(this).load(fanArtPost.getPostImageUrl()).into(postImage);
 
-        likeCounter = fanArtPost.getLikeCounter();
+            likeCounter = fanArtPost.getLikeCounter();
 
-        likeCounterTxt.setText(String.valueOf(likeCounter));
-        likeButton = fanArtPost.isLikeButton();
+            likeCounterTxt.setText(String.valueOf(likeCounter));
+            likeButton = fanArtPost.isLikeButton();
 
-        if (likeButton){
-            likeImage.setImageResource(R.drawable.ic_heart_red);
+            if (likeButton) {
+                likeImage.setImageResource(R.drawable.ic_heart_red);
+            }
+
+
+            likeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (likeButton) {
+                        likeCounter--;
+                        fanArtPost.setLikeCounter(likeCounter);
+                        likeImage.setImageResource(R.drawable.ic_heart);
+                        likeCounterTxt.setText(String.valueOf(likeCounter));
+                        likeButton = false;
+                        updateLikes();
+
+                    } else if (!likeButton) {
+                        likeCounter++;
+                        likeImage.setImageResource(R.drawable.ic_heart_red);
+                        fanArtPost.setLikeCounter(likeCounter);
+                        likeCounterTxt.setText(String.valueOf(likeCounter));
+                        likeButton = true;
+                        updateLikes();
+
+
+                    }
+                }
+            });
+
+            postImage.setOnClickListener(new DoubleClickListener() {
+                @Override
+                public void onDoubleClick(View v) {
+                    animationFunction();
+
+                    if (!likeButton) {
+                        likeCounter++;
+                        likeImage.setImageResource(R.drawable.ic_heart_red);
+                        fanArtPost.setLikeCounter(likeCounter);
+                        likeCounterTxt.setText(String.valueOf(likeCounter));
+                        updateLikes();
+                        likeButton = true;
+                    }
+                }
+            });
         }
-
-
-
-        likeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (likeButton){
-                    likeCounter--;
-                    fanArtPost.setLikeCounter(likeCounter);
-                    likeImage.setImageResource(R.drawable.ic_heart);
-                    likeCounterTxt.setText(String.valueOf(likeCounter));
-                    likeButton = false;
-                    updateLikes();
-
-                }else if (!likeButton){
-                    likeCounter++;
-                    likeImage.setImageResource(R.drawable.ic_heart_red);
-                    fanArtPost.setLikeCounter(likeCounter);
-                    likeCounterTxt.setText(String.valueOf(likeCounter));
-                    likeButton = true;
-                    updateLikes();
-
-
-                }
-            }
-        });
-
-        postImage.setOnClickListener(new DoubleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-
-            }
-
-            @Override
-            public void onDoubleClick(View v) {
-                animationFunction();
-
-                if (!likeButton){
-                    likeCounter++;
-                    likeImage.setImageResource(R.drawable.ic_heart_red);
-                    fanArtPost.setLikeCounter(likeCounter);
-                    likeCounterTxt.setText(String.valueOf(likeCounter));
-                    updateLikes();
-                    likeButton = true;
-                }
-            }
-        });
 
     }
 
