@@ -39,6 +39,8 @@ import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
@@ -173,19 +175,32 @@ public class MainActivity extends AppCompatActivity{
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot data : snapshot.getChildren()){
                     if (data != null){
-                        FanArtPost fanArtPost = data.getValue(FanArtPost.class);
-                        fanArtPostArrayList.add(fanArtPost);
-                    }
-                    CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
-                }
+                        Map<String , Object> map = (Map<String, Object>) data.getValue();
+                        Map<String , String> map2 = (Map<String, String>) map.get("likedUsers");
 
+
+
+
+                        FanArtPost fanArtPost = new FanArtPost((String) map.get("postImageUrl") , (boolean) map.get("likeButton")
+                                                                , Math.toIntExact((Long) map.get("likeCounter")), (String) map.get("imageID")
+                                                                , (String) map.get("userName") , (String) map.get("userImageUrl")
+                                                                ,(HashMap<String, String>) map2);
+                        fanArtPostArrayList.add(fanArtPost);
+
+                    }
+
+
+                }
+                CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
+                System.out.println("Value is: " + CurrentUserData.USER_FAN_ARTS.get(1).getLikedUsers());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println(error);
             }
         });
+
     }
 
     @Override

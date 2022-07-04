@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,28 +15,28 @@ public class FanArtPost implements Serializable {
     private boolean likeButton;
     private int likeCounter;
     private String imageID;
-    private LinkedList<String> likes;
+    private HashMap<String,String> likedUsers;
 
     public FanArtPost() {
     }
 
-    public FanArtPost( String postImage, boolean likeButton, int likeCounter, String imageID , String userName, String userImage, LinkedList<String> likes) {
+    public FanArtPost( String postImage, boolean likeButton, int likeCounter, String imageID , String userName, String userImage, HashMap<String,String> likedUsers) {
         this.userName = userName;
         this.userImageUrl = userImage;
         this.postImageUrl = postImage;
         this.likeButton = likeButton;
         this.likeCounter = likeCounter;
         this.imageID = imageID;
-        this.likes = likes;
+        this.likedUsers = likedUsers;
     }
 
 
-    public LinkedList<String> getLikes() {
-        return likes;
+    public HashMap<String,String> getLikedUsers() {
+        return likedUsers;
     }
 
-    public void setLikes(LinkedList<String> likes) {
-        this.likes = likes;
+    public void setLikedUsers(HashMap<String,String> likes) {
+        this.likedUsers = likes;
     }
 
     public int getLikeCounter() {
@@ -97,6 +98,22 @@ public class FanArtPost implements Serializable {
                 ", likeCounter=" + likeCounter +
                 ", imageID='" + imageID + '\'' +
                 '}';
+    }
+
+    public class LikedUsers{
+        private String userID;
+
+        public LikedUsers(String userID) {
+            this.userID = userID;
+        }
+
+        public String getUserID() {
+            return userID;
+        }
+
+        public void setUserID(String userID) {
+            this.userID = userID;
+        }
     }
 
 }

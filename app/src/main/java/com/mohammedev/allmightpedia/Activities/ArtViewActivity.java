@@ -48,7 +48,6 @@ public class ArtViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_art_view);
 
-
         postUserNameTxt = findViewById(R.id.user_name_post);
         postUserImage = findViewById(R.id.user_image_post);
         postImage = findViewById(R.id.post_image);

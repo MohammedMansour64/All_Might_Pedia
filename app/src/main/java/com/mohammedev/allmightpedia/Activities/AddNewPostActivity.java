@@ -37,6 +37,7 @@ import com.mohammedev.allmightpedia.utils.CurrentUserData;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -97,8 +98,9 @@ public class AddNewPostActivity extends AppCompatActivity {
                         User user = CurrentUserData.USER_DATA;
                         reference = database.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts");
                         String imageID = reference.push().getKey();
-                        LinkedList<String> linkedList = new LinkedList<>();
-                        FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , false , 0 , imageID , user.getUserName() , user.getImageUrl() ,linkedList);
+                        HashMap<String,String> likedUsers = new HashMap<>();
+                        likedUsers.put("user" , "id");
+                        FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , false , 0 , imageID , user.getUserName() , user.getImageUrl() ,likedUsers);
                         System.out.println(imageID);
                         reference.child(imageID).setValue(fanArtPost);
                         finish();
