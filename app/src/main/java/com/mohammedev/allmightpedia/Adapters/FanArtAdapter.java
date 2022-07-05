@@ -16,9 +16,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
+import com.mohammedev.allmightpedia.data.User;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.DoubleClickListener;
 import com.squareup.picasso.Picasso;
@@ -70,15 +72,16 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                     currentFanArtPost.setLikeCounter(likeCounter--);
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart);
                     holder.likeCounterTxt.setText(String.valueOf(likeCounter--));
-                    Toast.makeText(context, "minus", Toast.LENGTH_SHORT).show();
+                    notifyDataSetChanged();
                     dislikeFunction(likeCounter , imageID);
+
 
                 } else {
                     likeCounter++;
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
                     currentFanArtPost.setLikeCounter(likeCounter);
                     holder.likeCounterTxt.setText(String.valueOf(likeCounter));
-                    Toast.makeText(context, "positive", Toast.LENGTH_SHORT).show();
+                    notifyDataSetChanged();
                     likeFunction(likeCounter , imageID);
 
                 }
@@ -88,11 +91,13 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         holder.postImage.setOnClickListener(new DoubleClickListener() {
             @Override
             public void onDoubleClick(View v) {
+                Toast.makeText(context, isItLiked + "", Toast.LENGTH_SHORT).show();
                 if (isItLiked) {
                     likeCounter++;
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
                     currentFanArtPost.setLikeCounter(likeCounter);
                     holder.likeCounterTxt.setText(String.valueOf(likeCounter));
+                    notifyDataSetChanged();
                     Toast.makeText(context, String.valueOf(likeCounter), Toast.LENGTH_SHORT).show();
                     likeFunction(likeCounter , imageID);
                 }
@@ -110,7 +115,8 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     public class FanArtViewHolder extends RecyclerView.ViewHolder {
         private TextView userNameTxt , likeCounterTxt;
         private ShapeableImageView userImage;
-        private ImageView postImage , likeButtonImg;
+        private ImageView postImage;
+        private final ImageView likeButtonImg;
         public FanArtViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -133,8 +139,16 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             dataBaseReference.child("likedUsers").child("user" + numberOfLikedUsers).setValue(CurrentUserData.USER_DATA.getUserName());
             dataBaseReference.child("likeCounter").setValue(likeCounter);
 
+            fetchFeed();
+
         }
 
+    }
+
+    public void updateList(ArrayList<FanArtPost> fanArtPosts){
+        fansList.clear();
+        fansList.addAll(fanArtPosts);
+        notifyDataSetChanged();
     }
 
     public void dislikeFunction(int likeCounter , String imageID){
@@ -146,6 +160,9 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
             dataBaseReference.child("likedUsers").orderByChild(CurrentUserData.USER_DATA.getUserName()).getRef().removeValue();
             dataBaseReference.child("likeCounter").setValue(likeCounter);
+
+
+            fetchFeed();
 
         }
 
@@ -169,5 +186,50 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             System.out.println(currentFanArtPost.getLikedUsers() == null);
         }
         return false;
+    }
+
+    public void fetchFeed() {
+        ArrayList<User> userList = new ArrayList<>();
+        ArrayList<FanArtPost> fansPosts = new ArrayList<>();
+        Query usersQuery = FirebaseDatabase.getInstance().getReference().child("users");
+        usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot users: snapshot.getChildren()){
+                    userList.add(users.getValue(User.class));
+                }
+
+                if (userList.size() > 1){
+                    for (int i = 0; i < userList.size(); i++){
+                        Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
+                                .child(userList.get(i).getUserID()).child("posts");
+
+                        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                for (DataSnapshot posts: snapshot.getChildren()){
+                                    FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
+                                    fansPosts.add(fanArtPost);
+                                }
+                                updateList(fansPosts);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 }

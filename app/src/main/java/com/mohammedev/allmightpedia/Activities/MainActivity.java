@@ -160,8 +160,7 @@ public class MainActivity extends AppCompatActivity{
         databaseReference.child("users").child(userUID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                CurrentUserData.USER_DATA = user;
+                CurrentUserData.USER_DATA = snapshot.getValue(User.class);
             }
 
             @Override
@@ -192,7 +191,6 @@ public class MainActivity extends AppCompatActivity{
 
                 }
                 CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
-                System.out.println("Value is: " + CurrentUserData.USER_FAN_ARTS.get(1).getLikedUsers());
             }
 
             @Override
