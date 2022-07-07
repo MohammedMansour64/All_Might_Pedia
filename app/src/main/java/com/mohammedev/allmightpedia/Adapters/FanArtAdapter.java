@@ -52,7 +52,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         currentFanArtPost = fansList.get(position);
         likeCounter = currentFanArtPost.getLikeCounter();
         String imageID = currentFanArtPost.getImageID();
-        boolean isItLiked = checkIfLiked();
+        boolean isItLiked = checkIfLiked(currentFanArtPost.getLikedUsers());
 
         holder.userNameTxt.setText(currentFanArtPost.getUserName());
         holder.likeCounterTxt.setText(String.valueOf(currentFanArtPost.getLikeCounter()));
@@ -68,21 +68,21 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             @Override
             public void onClick(View v) {
                 if (isItLiked) {
-                    likeCounter--;
-                    currentFanArtPost.setLikeCounter(likeCounter--);
+                    int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() - 1;
+                    currentFanArtPost.setLikeCounter(test);
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart);
-                    holder.likeCounterTxt.setText(String.valueOf(likeCounter--));
+                    holder.likeCounterTxt.setText(String.valueOf(test));
                     notifyDataSetChanged();
-                    dislikeFunction(likeCounter , imageID);
+                    dislikeFunction(test , imageID);
 
 
                 } else {
-                    likeCounter++;
+                    int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() + 1;
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
-                    currentFanArtPost.setLikeCounter(likeCounter);
-                    holder.likeCounterTxt.setText(String.valueOf(likeCounter));
+                    currentFanArtPost.setLikeCounter(test);
+                    holder.likeCounterTxt.setText(String.valueOf(test));
                     notifyDataSetChanged();
-                    likeFunction(likeCounter , imageID);
+                    likeFunction(test , imageID);
 
                 }
             }
@@ -129,6 +129,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     }
 
     public void likeFunction(int likeCounter , String imageID){
+        System.out.println("I AM INSIDE likeFunction()");
         String userUID = CurrentUserData.USER_UID;
 
 
@@ -136,11 +137,14 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             int numberOfLikedUsers = currentFanArtPost.getLikedUsers().size();
             FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
-            dataBaseReference.child("likedUsers").child("user" + numberOfLikedUsers).setValue(CurrentUserData.USER_DATA.getUserName());
+            dataBaseReference.child("likedUsers").child(userUID).setValue(CurrentUserData.USER_DATA.getUserName());
             dataBaseReference.child("likeCounter").setValue(likeCounter);
 
             fetchFeed();
 
+        }else{
+            System.out.println("there is something stopping me");
+            System.out.println("LikeFunction: " + "UserUID:" + userUID + "imageID: " + imageID + "currentFanArtPost.getLikedUsers: " + currentFanArtPost.getLikedUsers());
         }
 
     }
@@ -152,38 +156,39 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     }
 
     public void dislikeFunction(int likeCounter , String imageID){
+        System.out.println("I AM INSIDE deslikeFunction()");
         String userUID = CurrentUserData.USER_UID;
         currentFanArtPost.getImageID();
 
         if (userUID != null && imageID != null && currentFanArtPost.getLikedUsers() != null){
             FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
-            dataBaseReference.child("likedUsers").orderByChild(CurrentUserData.USER_DATA.getUserName()).getRef().removeValue();
+            dataBaseReference.child("likedUsers").child(userUID).removeValue();
             dataBaseReference.child("likeCounter").setValue(likeCounter);
-
 
             fetchFeed();
 
+        }else{
+            System.out.println("there is something stopping me");
+            System.out.println("desLikeFunction: " + "UserUID:" + userUID + "imageID: " + imageID + "currentFanArtPost.getLikedUsers: " + currentFanArtPost.getLikedUsers());
         }
 
     }
 
-    public boolean checkIfLiked() {
-        if (currentFanArtPost.getLikedUsers() != null) {
-            HashMap<String, String> likedUsers = currentFanArtPost.getLikedUsers();
+    public boolean checkIfLiked(HashMap<String, String> likedUsers) {
+        HashMap<String, String> likedUsers1 = new HashMap<>();
+        likedUsers1.put("test" , "user1");
+        likedUsers1.putAll(likedUsers);
+        if (likedUsers1 != null) {
                 String userName = CurrentUserData.USER_DATA.getUserName();
 
-                if (likedUsers.containsValue(userName)) {
-                    System.out.println("true or false: " + true);
+                if (likedUsers1.containsValue(userName)) {
                     return true;
-                } else if (!likedUsers.containsValue(userName)) {
-                    System.out.println("true or false: " + false);
+                } else if (!likedUsers1.containsValue(userName)) {
                     return false;
                 }
                 return false;
 
-        }else{
-            System.out.println(currentFanArtPost.getLikedUsers() == null);
         }
         return false;
     }
@@ -213,7 +218,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                                     fansPosts.add(fanArtPost);
                                 }
                                 updateList(fansPosts);
-
                             }
 
                             @Override
