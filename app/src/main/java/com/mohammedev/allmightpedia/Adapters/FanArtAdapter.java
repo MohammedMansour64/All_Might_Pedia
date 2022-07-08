@@ -129,12 +129,10 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     }
 
     public void likeFunction(int likeCounter , String imageID){
-        System.out.println("I AM INSIDE likeFunction()");
         String userUID = CurrentUserData.USER_UID;
 
 
         if (userUID != null && imageID != null && currentFanArtPost.getLikedUsers() != null){
-            int numberOfLikedUsers = currentFanArtPost.getLikedUsers().size();
             FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
             dataBaseReference.child("likedUsers").child(userUID).setValue(CurrentUserData.USER_DATA.getUserName());
@@ -142,9 +140,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
             fetchFeed();
 
-        }else{
-            System.out.println("there is something stopping me");
-            System.out.println("LikeFunction: " + "UserUID:" + userUID + "imageID: " + imageID + "currentFanArtPost.getLikedUsers: " + currentFanArtPost.getLikedUsers());
         }
 
     }
@@ -156,7 +151,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     }
 
     public void dislikeFunction(int likeCounter , String imageID){
-        System.out.println("I AM INSIDE deslikeFunction()");
         String userUID = CurrentUserData.USER_UID;
         currentFanArtPost.getImageID();
 
@@ -168,9 +162,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
             fetchFeed();
 
-        }else{
-            System.out.println("there is something stopping me");
-            System.out.println("desLikeFunction: " + "UserUID:" + userUID + "imageID: " + imageID + "currentFanArtPost.getLikedUsers: " + currentFanArtPost.getLikedUsers());
         }
 
     }

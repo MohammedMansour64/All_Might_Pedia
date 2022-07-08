@@ -12,7 +12,6 @@ public class FanArtPost implements Serializable {
     private String userName;
     private String userImageUrl;
     private String postImageUrl;
-    private boolean likeButton;
     private int likeCounter;
     private String imageID;
     private HashMap<String,String> likedUsers;
@@ -20,11 +19,10 @@ public class FanArtPost implements Serializable {
     public FanArtPost() {
     }
 
-    public FanArtPost( String postImage, boolean likeButton, int likeCounter, String imageID , String userName, String userImage, HashMap<String,String> likedUsers) {
+    public FanArtPost( String postImage, int likeCounter, String imageID , String userName, String userImage, HashMap<String,String> likedUsers) {
         this.userName = userName;
         this.userImageUrl = userImage;
         this.postImageUrl = postImage;
-        this.likeButton = likeButton;
         this.likeCounter = likeCounter;
         this.imageID = imageID;
         this.likedUsers = likedUsers;
@@ -80,13 +78,6 @@ public class FanArtPost implements Serializable {
         this.postImageUrl = postImageUrl;
     }
 
-    public boolean isLikeButton() {
-        return likeButton;
-    }
-
-    public void setLikeButton(boolean likeButton) {
-        this.likeButton = likeButton;
-    }
 
     @Override
     public String toString() {
@@ -94,7 +85,6 @@ public class FanArtPost implements Serializable {
                 "userName='" + userName + '\'' +
                 ", userImageUrl='" + userImageUrl + '\'' +
                 ", postImageUrl='" + postImageUrl + '\'' +
-                ", likeButton=" + likeButton +
                 ", likeCounter=" + likeCounter +
                 ", imageID='" + imageID + '\'' +
                 '}';
