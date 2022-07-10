@@ -9,9 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +36,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     int likeCounter;
 
     FanArtPost currentFanArtPost;
+    FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
 
     public FanArtAdapter(ArrayList<FanArtPost> fansList, Context context) {
         this.fansList = fansList;
@@ -52,6 +55,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         currentFanArtPost = fansList.get(position);
         likeCounter = currentFanArtPost.getLikeCounter();
         String imageID = currentFanArtPost.getImageID();
+        String userID = currentFanArtPost.getUserID();
         boolean isItLiked = checkIfLiked(currentFanArtPost.getLikedUsers());
 
         holder.userNameTxt.setText(currentFanArtPost.getUserName());
@@ -59,6 +63,10 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
         Picasso.with(context).load(currentFanArtPost.getUserImageUrl()).into(holder.userImage);
         Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage);
+
+
+
+
 
         if (isItLiked){
             holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
@@ -72,8 +80,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                     currentFanArtPost.setLikeCounter(test);
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart);
                     holder.likeCounterTxt.setText(String.valueOf(test));
-                    notifyDataSetChanged();
-                    dislikeFunction(test , imageID);
+                    dislikeFunction(test , imageID, userID);
 
 
                 } else {
@@ -81,8 +88,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
                     currentFanArtPost.setLikeCounter(test);
                     holder.likeCounterTxt.setText(String.valueOf(test));
-                    notifyDataSetChanged();
-                    likeFunction(test , imageID);
+                    likeFunction(test , imageID , userID);
 
                 }
             }
@@ -97,9 +103,8 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
                     currentFanArtPost.setLikeCounter(likeCounter);
                     holder.likeCounterTxt.setText(String.valueOf(likeCounter));
-                    notifyDataSetChanged();
                     Toast.makeText(context, String.valueOf(likeCounter), Toast.LENGTH_SHORT).show();
-                    likeFunction(likeCounter , imageID);
+                    likeFunction(likeCounter , imageID , userID);
                 }
             }
         });
@@ -112,10 +117,11 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         return fansList.size();
     }
 
-    public class FanArtViewHolder extends RecyclerView.ViewHolder {
-        private TextView userNameTxt , likeCounterTxt;
-        private ShapeableImageView userImage;
-        private ImageView postImage;
+    public static class FanArtViewHolder extends RecyclerView.ViewHolder {
+        private final TextView userNameTxt;
+        private final TextView likeCounterTxt;
+        private final ShapeableImageView userImage;
+        private final ImageView postImage;
         private final ImageView likeButtonImg;
         public FanArtViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -128,18 +134,20 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         }
     }
 
-    public void likeFunction(int likeCounter , String imageID){
-        String userUID = CurrentUserData.USER_UID;
-
+    public void likeFunction(int likeCounter , String imageID , String userUID){
 
         if (userUID != null && imageID != null && currentFanArtPost.getLikedUsers() != null){
-            FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
             dataBaseReference.child("likedUsers").child(userUID).setValue(CurrentUserData.USER_DATA.getUserName());
             dataBaseReference.child("likeCounter").setValue(likeCounter);
 
+
+
             fetchFeed();
 
+        }else{
+            System.out.println("null");
         }
 
     }
@@ -150,12 +158,10 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         notifyDataSetChanged();
     }
 
-    public void dislikeFunction(int likeCounter , String imageID){
-        String userUID = CurrentUserData.USER_UID;
-        currentFanArtPost.getImageID();
+    public void dislikeFunction(int likeCounter , String imageID , String userUID){
 
         if (userUID != null && imageID != null && currentFanArtPost.getLikedUsers() != null){
-            FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
             dataBaseReference.child("likedUsers").child(userUID).removeValue();
             dataBaseReference.child("likeCounter").setValue(likeCounter);
@@ -227,4 +233,5 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         });
 
     }
+
 }

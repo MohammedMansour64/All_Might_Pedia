@@ -14,20 +14,29 @@ public class FanArtPost implements Serializable {
     private String postImageUrl;
     private int likeCounter;
     private String imageID;
+    private String userID;
     private HashMap<String,String> likedUsers;
 
     public FanArtPost() {
     }
 
-    public FanArtPost( String postImage, int likeCounter, String imageID , String userName, String userImage, HashMap<String,String> likedUsers) {
+    public FanArtPost( String postImage, int likeCounter, String imageID , String userName, String userImage, String userID, HashMap<String,String> likedUsers) {
         this.userName = userName;
         this.userImageUrl = userImage;
         this.postImageUrl = postImage;
         this.likeCounter = likeCounter;
         this.imageID = imageID;
         this.likedUsers = likedUsers;
+        this.userID = userID;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 
     public HashMap<String,String> getLikedUsers() {
         return likedUsers;
