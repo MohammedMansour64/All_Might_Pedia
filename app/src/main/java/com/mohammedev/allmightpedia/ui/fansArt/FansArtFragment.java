@@ -116,7 +116,7 @@ public class FansArtFragment extends Fragment{
                                     fanPostsList.add(fanArtPost);
                                 }
 
-                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext());
+                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList);
                                 feedRecyclerView.setAdapter(fanArtAdapter);
                             }
 

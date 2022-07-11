@@ -1,6 +1,8 @@
 package com.mohammedev.allmightpedia.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -20,9 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Activities.MainActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
+import com.mohammedev.allmightpedia.ui.profile.ProfileFragment;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.DoubleClickListener;
 import com.squareup.picasso.Picasso;
@@ -34,19 +40,21 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     ArrayList<FanArtPost> fansList;
     Context context;
     int likeCounter;
-
+    View view;
+    ArrayList<User> userList;
     FanArtPost currentFanArtPost;
     FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
 
-    public FanArtAdapter(ArrayList<FanArtPost> fansList, Context context) {
+    public FanArtAdapter(ArrayList<FanArtPost> fansList, Context context , ArrayList<User> userList) {
         this.fansList = fansList;
         this.context = context;
+        this.userList = userList;
     }
 
     @NonNull
     @Override
     public FanArtViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.art_post_layout , parent , false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.art_post_layout , parent , false);
         return new FanArtViewHolder(view);
     }
 
@@ -65,8 +73,37 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage);
 
 
+        holder.userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                System.out.println(userList.get(0).getUserName());
 
 
+                System.out.println("not inside for nor if");
+                for (User user : userList){
+                    System.out.println("inside for but not if");
+                    if (user.getUserID() != null && user.getUserName().contains(currentFanArtPost.getUserID())){
+                        Intent intent = new Intent(context , MainActivity.class);
+                        intent.putExtra("user" , user);
+                        context.startActivity(intent);
+                        System.out.println("not null");
+                    }else{
+                        System.out.println("null");
+                    }
+                }
+
+                for (int i = 0; i < userList.size(); i++){
+                    User user = userList.get(i);
+                    if (user.getUserID() != null && user.getUserName().contains(currentFanArtPost.getUserID())){
+                        Intent intent = new Intent(context , MainActivity.class);
+                        intent.putExtra("user" , user);
+                        context.startActivity(intent);
+                        System.out.println("not null");
+                    }
+                }
+            }
+        });
 
         if (isItLiked){
             holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
@@ -167,7 +204,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             dataBaseReference.child("likeCounter").setValue(likeCounter);
 
             fetchFeed();
-
         }
 
     }
@@ -191,7 +227,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     }
 
     public void fetchFeed() {
-        ArrayList<User> userList = new ArrayList<>();
+
         ArrayList<FanArtPost> fansPosts = new ArrayList<>();
         Query usersQuery = FirebaseDatabase.getInstance().getReference().child("users");
         usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -202,7 +238,9 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                 }
 
                 if (userList.size() > 1){
+
                     for (int i = 0; i < userList.size(); i++){
+                        System.out.println(userList.get(i).getUserID());
                         Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
                                 .child(userList.get(i).getUserID()).child("posts");
 

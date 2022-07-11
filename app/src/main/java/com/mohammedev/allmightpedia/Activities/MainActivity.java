@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                         FanArtPost fanArtPost = new FanArtPost((String) map.get("postImageUrl")
-                                                                , Math.toIntExact((Long) map.get("likeCounter")), (String) map.get("imageID")
+                                                                , 0, (String) map.get("imageID")
                                                                 , (String) map.get("userName") , (String) map.get("userImageUrl")
                                                                 , userUID,(HashMap<String, String>) map2);
                         fanArtPostArrayList.add(fanArtPost);

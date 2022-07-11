@@ -8,6 +8,9 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,7 +37,7 @@ import java.util.HashMap;
 
 public class ArtViewActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
 
     AnimatedVectorDrawableCompat avd;
     AnimatedVectorDrawable avd2;
@@ -48,6 +51,7 @@ public class ArtViewActivity extends AppCompatActivity {
     private boolean likeButton;
     private int likeCounter;
     private String imageID;
+    private String userID;
     private FanArtPost fanArtPost;
 
     @Override
@@ -76,6 +80,7 @@ public class ArtViewActivity extends AppCompatActivity {
 
             likeCounterTxt.setText(String.valueOf(likeCounter));
             likeButton = checkIfLiked(fanArtPost.getLikedUsers());
+            userID = fanArtPost.getUserID();
 
             if (likeButton) {
                 likeImage.setImageResource(R.drawable.ic_heart_red);
@@ -212,5 +217,39 @@ public class ArtViewActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.post_menu , menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.delete_post){
+            deletePost(userID, imageID);
+            return true;
+        }
+        return false;
+    }
+
+    public void deletePost(String userID, String imageID){
+        databaseReference.child("users").child(userID).child("posts").child(imageID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    System.out.println(ds.getRef());
+                    ds.getRef().removeValue();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

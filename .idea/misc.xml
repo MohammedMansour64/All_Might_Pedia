@@ -26,6 +26,7 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login_register.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_profile.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_sign_in_sign_up.xml" value="0.2222222222222222" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_sign_in_up.xml" value="0.25" />
@@ -63,6 +64,7 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/activity_main_drawer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/fan_art_bottom_nav_menu.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/main.xml" value="0.25" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/menu/post_menu.xml" value="0.2967079948696024" />
       </map>
     </option>
   </component>

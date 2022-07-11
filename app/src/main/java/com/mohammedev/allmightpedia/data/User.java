@@ -1,10 +1,13 @@
 package com.mohammedev.allmightpedia.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User {
+public class User implements Parcelable {
     private String userName, userBio , imageUrl , email, userID;
 
 
@@ -21,6 +24,26 @@ public class User {
 
     public User() {
     }
+
+    protected User(Parcel in) {
+        userName = in.readString();
+        userBio = in.readString();
+        imageUrl = in.readString();
+        email = in.readString();
+        userID = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getUserID() {
         return userID;
@@ -60,5 +83,19 @@ public class User {
 
     public void setUserBio(String job) {
         this.userBio = userBio;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userName);
+        dest.writeString(userBio);
+        dest.writeString(imageUrl);
+        dest.writeString(email);
+        dest.writeString(userID);
     }
 }
