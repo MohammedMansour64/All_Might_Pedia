@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.Activities.MainActivity;
+import com.mohammedev.allmightpedia.Activities.ProfileActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
@@ -77,31 +78,18 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             @Override
             public void onClick(View v) {
 
-                System.out.println(userList.get(0).getUserName());
+                String id = fansList.get(holder.getAdapterPosition()).getUserID();
 
-
-                System.out.println("not inside for nor if");
                 for (User user : userList){
-                    System.out.println("inside for but not if");
-                    if (user.getUserID() != null && user.getUserName().contains(currentFanArtPost.getUserID())){
-                        Intent intent = new Intent(context , MainActivity.class);
+
+                    if (user.getUserID() != null && user.getUserID().contains(id)){
+                        Intent intent = new Intent(context , ProfileActivity.class);
                         intent.putExtra("user" , user);
                         context.startActivity(intent);
-                        System.out.println("not null");
-                    }else{
-                        System.out.println("null");
                     }
                 }
 
-                for (int i = 0; i < userList.size(); i++){
-                    User user = userList.get(i);
-                    if (user.getUserID() != null && user.getUserName().contains(currentFanArtPost.getUserID())){
-                        Intent intent = new Intent(context , MainActivity.class);
-                        intent.putExtra("user" , user);
-                        context.startActivity(intent);
-                        System.out.println("not null");
-                    }
-                }
+
             }
         });
 

@@ -2,6 +2,7 @@ package com.mohammedev.allmightpedia.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -65,8 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
                     FanArtPost fanArtPost = ds.getValue(FanArtPost.class);
                     fanArtPostArrayList.add(fanArtPost);
                 }
-                postsAdapter = new PostsAdapter(fanArtPostArrayList , ProfileActivity.this);
-                recyclerView.setAdapter(postsAdapter);
+
 
             }
 
@@ -75,5 +75,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        postsAdapter = new PostsAdapter(fanArtPostArrayList , this);
+        recyclerView.setAdapter(postsAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this , 3));
+
     }
 }
