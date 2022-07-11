@@ -2,6 +2,8 @@ package com.mohammedev.allmightpedia.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.ChildEventListener;
@@ -38,6 +41,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtViewHolder> {
+    AnimatedVectorDrawableCompat avd;
+    AnimatedVectorDrawable avd2;
+
     ArrayList<FanArtPost> fansList;
     Context context;
     int likeCounter;
@@ -93,6 +99,22 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             }
         });
 
+        holder.userNameTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = fansList.get(holder.getAdapterPosition()).getUserID();
+
+                for (User user : userList){
+
+                    if (user.getUserID() != null && user.getUserID().contains(id)){
+                        Intent intent = new Intent(context , ProfileActivity.class);
+                        intent.putExtra("user" , user);
+                        context.startActivity(intent);
+                    }
+                }
+            }
+        });
+
         if (isItLiked){
             holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
         }
@@ -122,14 +144,15 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         holder.postImage.setOnClickListener(new DoubleClickListener() {
             @Override
             public void onDoubleClick(View v) {
-                Toast.makeText(context, isItLiked + "", Toast.LENGTH_SHORT).show();
-                if (isItLiked) {
-                    likeCounter++;
+                if (!isItLiked) {
+                    int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() + 1;
                     holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
                     currentFanArtPost.setLikeCounter(likeCounter);
                     holder.likeCounterTxt.setText(String.valueOf(likeCounter));
-                    Toast.makeText(context, String.valueOf(likeCounter), Toast.LENGTH_SHORT).show();
-                    likeFunction(likeCounter , imageID , userID);
+                    animationFunction(holder.heartAnimationImage);
+                    likeFunction(test , imageID , userID);
+                }else{
+                    animationFunction(holder.heartAnimationImage);
                 }
             }
         });
@@ -148,6 +171,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         private final ShapeableImageView userImage;
         private final ImageView postImage;
         private final ImageView likeButtonImg;
+        private final ImageView heartAnimationImage;
         public FanArtViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -156,6 +180,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             postImage = itemView.findViewById(R.id.post_image);
             likeButtonImg = itemView.findViewById(R.id.post_like_btn);
             likeCounterTxt = itemView.findViewById(R.id.post_like_counter);
+            heartAnimationImage = itemView.findViewById(R.id.heart_animation_image);
         }
     }
 
@@ -214,9 +239,9 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         return false;
     }
 
-    public void fetchFeed() {
-
+    public void fetchFeed(){
         ArrayList<FanArtPost> fansPosts = new ArrayList<>();
+        ArrayList<User> userList = new ArrayList<>();
         Query usersQuery = FirebaseDatabase.getInstance().getReference().child("users");
         usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -226,9 +251,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                 }
 
                 if (userList.size() > 1){
-
                     for (int i = 0; i < userList.size(); i++){
-                        System.out.println(userList.get(i).getUserID());
                         Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
                                 .child(userList.get(i).getUserID()).child("posts");
 
@@ -240,6 +263,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fansPosts.add(fanArtPost);
                                 }
+                                System.out.println(fansPosts.size());
                                 updateList(fansPosts);
                             }
 
@@ -258,6 +282,22 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             }
         });
 
+
+
+    }
+
+    public void animationFunction(ImageView heartAnimationImage){
+        Drawable drawable = heartAnimationImage.getDrawable();
+
+        heartAnimationImage.setAlpha(0.70f);
+
+        if (drawable instanceof AnimatedVectorDrawableCompat){
+            avd = (AnimatedVectorDrawableCompat) drawable;
+            avd.start();
+        }else if (drawable instanceof AnimatedVectorDrawable){
+            avd2 = (AnimatedVectorDrawable) drawable;
+            avd2.start();
+        }
     }
 
 }

@@ -40,16 +40,28 @@
 
     <ImageView
         android:id="@+id/post_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="360dp"
         android:layout_marginTop="8dp"
+        android:maxHeight="330dp"
         android:minHeight="330dp"
-        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileLayout"
+        app:srcCompat="@drawable/all_might_nav_photo" />
+
+    <ImageView
+        android:id="@+id/heart_animation_image"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileLayout"
-        app:srcCompat="@drawable/all_might_nav_photo" />
+        app:srcCompat="@drawable/like_animation"
+        android:alpha="0"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
