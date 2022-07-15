@@ -19,17 +19,21 @@ import com.mohammedev.allmightpedia.Adapters.PostsAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
+import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
     private ShapeableImageView userImage;
     private TextView userName , userBio , userEmail;
     private Button editButton;
     private RecyclerView recyclerView;
     public PostsAdapter postsAdapter;
+    User user;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
 
     @Override
@@ -50,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void setUserData(){
         Bundle bundle = getIntent().getExtras();
 
-        User user = bundle.getParcelable("user");
+        user = bundle.getParcelable("user");
 
         Picasso.with(this).load(user.getImageUrl()).into(userImage);
 
@@ -58,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
         userBio.setText(user.getUserBio());
         userEmail.setText(user.getEmail());
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
         databaseReference.child("users").child(user.getUserID()).child("posts").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -67,7 +71,8 @@ public class ProfileActivity extends AppCompatActivity {
                     fanArtPostArrayList.add(fanArtPost);
                 }
 
-
+                postsAdapter.updateList(fanArtPostArrayList);
+                postsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -80,5 +85,55 @@ public class ProfileActivity extends AppCompatActivity {
         recyclerView.setAdapter(postsAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this , 3));
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (fanArtPostArrayList != null){
+            getUserData(user.getUserID());
+
+        }
+    }
+
+    private void getUserData(String userUID) {
+        databaseReference.child("users").child(userUID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                CurrentUserData.USER_DATA = snapshot.getValue(User.class);
+
+                for (int i = 0; i < fanArtPostArrayList.size(); i++){
+                    fanArtPostArrayList.get(i).setUserName(CurrentUserData.USER_DATA.getUserName());
+                    fanArtPostArrayList.get(i).setUserImageUrl(CurrentUserData.USER_DATA.getImageUrl());
+
+                }
+
+                postsAdapter.updateList(fanArtPostArrayList);
+                postsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        databaseReference.child("users").child(userUID).child("posts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()){
+                    if (data != null){
+                        FanArtPost fanArtPost = data.getValue(FanArtPost.class);
+                        fanArtPostArrayList.add(fanArtPost);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

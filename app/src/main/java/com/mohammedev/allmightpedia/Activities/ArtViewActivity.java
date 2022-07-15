@@ -95,14 +95,14 @@ public class ArtViewActivity extends AppCompatActivity {
                         fanArtPost.setLikeCounter(likeCounter);
                         likeImage.setImageResource(R.drawable.ic_heart);
                         likeCounterTxt.setText(String.valueOf(likeCounter));
-                        dislikeFunction(likeCounter,imageID);
+                        dislikeFunction(likeCounter,imageID , userID);
 
                     } else if (!likeButton) {
                         likeCounter++;
                         likeImage.setImageResource(R.drawable.ic_heart_red);
                         fanArtPost.setLikeCounter(likeCounter);
                         likeCounterTxt.setText(String.valueOf(likeCounter));
-                        likeFunction(likeCounter,imageID);
+                        likeFunction(likeCounter,imageID , userID);
 
 
                     }
@@ -118,7 +118,7 @@ public class ArtViewActivity extends AppCompatActivity {
                         likeImage.setImageResource(R.drawable.ic_heart_red);
                         fanArtPost.setLikeCounter(likeCounter);
                         likeCounterTxt.setText(String.valueOf(likeCounter));
-                        likeFunction(likeCounter,imageID);
+                        likeFunction(likeCounter,imageID , userID);
                     }
                 }
             });
@@ -140,9 +140,7 @@ public class ArtViewActivity extends AppCompatActivity {
         }
     }
 
-    public void likeFunction(int likeCounter , String imageID){
-        String userUID = CurrentUserData.USER_UID;
-
+    public void likeFunction(int likeCounter , String imageID , String userUID){
 
         if (userUID != null && imageID != null && fanArtPost.getLikedUsers() != null){
             FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
@@ -156,9 +154,7 @@ public class ArtViewActivity extends AppCompatActivity {
 
     }
 
-    public void dislikeFunction(int likeCounter , String imageID){
-        String userUID = CurrentUserData.USER_UID;
-        fanArtPost.getImageID();
+    public void dislikeFunction(int likeCounter , String imageID , String userUID){
 
         if (userUID != null && imageID != null && fanArtPost.getLikedUsers() != null){
             FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
@@ -191,7 +187,7 @@ public class ArtViewActivity extends AppCompatActivity {
     }
 
     public void fetchPost() {
-        databaseReference.child("users").child(CurrentUserData.USER_UID)
+        databaseReference.child("users").child(userID)
                 .child("posts").child(imageID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

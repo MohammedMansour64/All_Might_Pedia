@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +37,11 @@ import com.mohammedev.allmightpedia.utils.DoubleClickListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtViewHolder> {
     AnimatedVectorDrawableCompat avd;
@@ -79,6 +82,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         Picasso.with(context).load(currentFanArtPost.getUserImageUrl()).into(holder.userImage);
         Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage);
 
+        sortByLikes();
 
         holder.userImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,6 +302,13 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             avd2 = (AnimatedVectorDrawable) drawable;
             avd2.start();
         }
+    }
+
+    public void sortByLikes(){
+
+        fansList.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
+        Collections.reverse(fansList);
+
     }
 
 }

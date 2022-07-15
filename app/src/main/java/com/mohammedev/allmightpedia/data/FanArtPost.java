@@ -4,11 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FanArtPost implements Serializable {
+public class FanArtPost implements Serializable , Comparable<FanArtPost> , Comparator<FanArtPost> {
     private String userName;
     private String userImageUrl;
     private String postImageUrl;
@@ -97,6 +98,16 @@ public class FanArtPost implements Serializable {
                 ", likeCounter=" + likeCounter +
                 ", imageID='" + imageID + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(FanArtPost o) {
+        return 0;
+    }
+
+    @Override
+    public int compare(FanArtPost o1, FanArtPost o2) {
+        return 0;
     }
 
     public class LikedUsers{
