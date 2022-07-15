@@ -36,6 +36,7 @@ import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.DoubleClickListener;
 import com.squareup.picasso.Picasso;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,6 +60,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         this.fansList = fansList;
         this.context = context;
         this.userList = userList;
+        sortByLikes(fansList);
     }
 
     @NonNull
@@ -70,6 +72,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
     @Override
     public void onBindViewHolder(@NonNull FanArtViewHolder holder, int position) {
+
         currentFanArtPost = fansList.get(position);
         likeCounter = currentFanArtPost.getLikeCounter();
         String imageID = currentFanArtPost.getImageID();
@@ -82,7 +85,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         Picasso.with(context).load(currentFanArtPost.getUserImageUrl()).into(holder.userImage);
         Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage);
 
-        sortByLikes();
 
         holder.userImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +194,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
         if (userUID != null && imageID != null && currentFanArtPost.getLikedUsers() != null){
 
+            System.out.println("Inside likeFunction:" + userUID);
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
             dataBaseReference.child("likedUsers").child(userUID).setValue(CurrentUserData.USER_DATA.getUserName());
             dataBaseReference.child("likeCounter").setValue(likeCounter);
@@ -207,6 +210,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     }
 
     public void updateList(ArrayList<FanArtPost> fanArtPosts){
+
         fansList.clear();
         fansList.addAll(fanArtPosts);
         notifyDataSetChanged();
@@ -267,7 +271,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fansPosts.add(fanArtPost);
                                 }
-                                System.out.println(fansPosts.size());
+                                sortByLikes(fansPosts);
                                 updateList(fansPosts);
                             }
 
@@ -304,10 +308,14 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         }
     }
 
-    public void sortByLikes(){
+    public void sortByLikes(ArrayList<FanArtPost> fanArtPosts){
 
-        fansList.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
-        Collections.reverse(fansList);
+        fanArtPosts.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
+        Collections.reverse(fanArtPosts);
+
+        for (int i = 0; i < fanArtPosts.size(); i++){
+            System.out.println("Hii" + fanArtPosts.get(i).getUserID());
+        }
 
     }
 
