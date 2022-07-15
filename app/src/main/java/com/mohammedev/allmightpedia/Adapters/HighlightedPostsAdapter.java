@@ -10,11 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
+import com.mohammedev.allmightpedia.data.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightedPostsAdapter.HighlightedPostsViewHolder>{
     private ArrayList<FanArtPost> postArrayList;
@@ -55,5 +63,61 @@ public class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightedPos
 
         }
 
+    }
+
+    public void fetchFeed(){
+        ArrayList<FanArtPost> fansPosts = new ArrayList<>();
+        ArrayList<User> userList = new ArrayList<>();
+        Query usersQuery = FirebaseDatabase.getInstance().getReference().child("users");
+        usersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot users: snapshot.getChildren()){
+                    userList.add(users.getValue(User.class));
+                }
+
+                if (userList.size() > 1){
+                    for (int i = 0; i < userList.size(); i++){
+                        Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
+                                .child(userList.get(i).getUserID()).child("posts");
+
+                        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                for (DataSnapshot posts: snapshot.getChildren()){
+                                    FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
+                                    fansPosts.add(fanArtPost);
+                                }
+
+                                getTopLiked(fansPosts);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+    }
+
+    public void getTopLiked(ArrayList<FanArtPost> fanArtPosts){
+        fanArtPosts.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
+        Collections.reverse(fanArtPosts);
+
+        for (int i = fanArtPosts.size(); i >= 0; i--){
+            System.out.println(i);
+        }
     }
 }

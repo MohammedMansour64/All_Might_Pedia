@@ -38,6 +38,8 @@ import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.ViewSpaces;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class FansArtFragment extends Fragment{
@@ -47,6 +49,7 @@ public class FansArtFragment extends Fragment{
     FloatingActionButton fabNewPost;
     ConstraintLayout constraintLayout;
     RecyclerView feedRecyclerView;
+    RecyclerView highlightRecyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,16 +77,14 @@ public class FansArtFragment extends Fragment{
         });
 
         feedRecyclerView = view.findViewById(R.id.feedRecyclerView);
-        RecyclerView highlightRecyclerView = view.findViewById(R.id.highlighted_arts_recyclerView);
+        highlightRecyclerView = view.findViewById(R.id.highlighted_arts_recyclerView);
 
-        HighlightedPostsAdapter highlightedPostsAdapter = new HighlightedPostsAdapter(fanPostsList, getContext());
 
 
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         feedRecyclerView.addItemDecoration(new ViewSpaces(20));
         feedRecyclerView.setNestedScrollingEnabled(false);
 
-        highlightRecyclerView.setAdapter(highlightedPostsAdapter);
         highlightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         highlightRecyclerView.addItemDecoration(new ViewSpaces(20));
 
@@ -118,6 +119,9 @@ public class FansArtFragment extends Fragment{
 
                                 fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList);
                                 feedRecyclerView.setAdapter(fanArtAdapter);
+                                getTopLiked(fanPostsList);
+
+
                             }
 
                             @Override
@@ -137,6 +141,22 @@ public class FansArtFragment extends Fragment{
 
 
 
+    }
+
+    public void getTopLiked(ArrayList<FanArtPost> fanArtPosts){
+        ArrayList<FanArtPost> highLightedPosts = new ArrayList<>();
+        fanArtPosts.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
+        Collections.reverse(fanArtPosts);
+
+        if (fanArtPosts.size() > 1){
+            for (int i = fanArtPosts.size() - 1; i >= fanArtPosts.size() - 3; i--){
+                highLightedPosts.add(fanArtPosts.get(i));
+            }
+
+            HighlightedPostsAdapter highlightedPostsAdapter = new HighlightedPostsAdapter(highLightedPosts, getContext());
+            highlightRecyclerView.setAdapter(highlightedPostsAdapter);
+
+        }
     }
 
 }

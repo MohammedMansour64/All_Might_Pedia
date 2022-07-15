@@ -10,4 +10,5 @@ public class CurrentUserData {
     public static String USER_UID = "";
     public static User USER_DATA = null;
     public static ArrayList<FanArtPost> USER_FAN_ARTS = null;
+    public static ArrayList<FanArtPost> HIGHLIGHTED_USER_FAN_ARTS = null;
 }

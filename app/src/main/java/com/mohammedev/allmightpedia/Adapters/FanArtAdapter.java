@@ -196,15 +196,11 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
             System.out.println("Inside likeFunction:" + userUID);
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
-            dataBaseReference.child("likedUsers").child(userUID).setValue(CurrentUserData.USER_DATA.getUserName());
+            dataBaseReference.child("likedUsers").child(CurrentUserData.USER_UID).setValue(CurrentUserData.USER_DATA.getUserName());
             dataBaseReference.child("likeCounter").setValue(likeCounter);
-
-
 
             fetchFeed();
 
-        }else{
-            System.out.println("null");
         }
 
     }
@@ -219,9 +215,10 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     public void dislikeFunction(int likeCounter , String imageID , String userUID){
 
         if (userUID != null && imageID != null && currentFanArtPost.getLikedUsers() != null){
+            System.out.println("Inside disLikeFunction:" + userUID);
 
             DatabaseReference dataBaseReference = dataBase.getReference("users").child(userUID).child("posts").child(imageID);
-            dataBaseReference.child("likedUsers").child(userUID).removeValue();
+            dataBaseReference.child("likedUsers").child(CurrentUserData.USER_UID).removeValue();
             dataBaseReference.child("likeCounter").setValue(likeCounter);
 
             fetchFeed();
@@ -312,10 +309,6 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
 
         fanArtPosts.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
         Collections.reverse(fanArtPosts);
-
-        for (int i = 0; i < fanArtPosts.size(); i++){
-            System.out.println("Hii" + fanArtPosts.get(i).getUserID());
-        }
 
     }
 

@@ -40,7 +40,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
@@ -154,8 +157,6 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-
-
     private void getUserData(String userUID) {
         databaseReference.child("users").child(userUID).addValueEventListener(new ValueEventListener() {
             @Override
@@ -177,9 +178,6 @@ public class MainActivity extends AppCompatActivity{
                         Map<String , Object> map = (Map<String, Object>) data.getValue();
                         Map<String , String> map2 = (Map<String, String>) map.get("likedUsers");
 
-
-
-
                         FanArtPost fanArtPost = new FanArtPost((String) map.get("postImageUrl")
                                                                 , 0, (String) map.get("imageID")
                                                                 , (String) map.get("userName") , (String) map.get("userImageUrl")
@@ -188,9 +186,9 @@ public class MainActivity extends AppCompatActivity{
 
                     }
 
-
                 }
                 CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
+
             }
 
             @Override
@@ -225,5 +223,6 @@ public class MainActivity extends AppCompatActivity{
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
 
 }
