@@ -1,6 +1,7 @@
 package com.mohammedev.allmightpedia.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Activities.ArtViewActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
@@ -46,6 +48,24 @@ public class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightedPos
         FanArtPost currentPost = postArrayList.get(position);
         holder.highlightedMomentTextView.setText(currentPost.getUserName());
         Picasso.with(context).load(currentPost.getPostImageUrl()).into(holder.highlightedMomentImageView);
+
+        holder.highlightedMomentTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context , ArtViewActivity.class);
+                intent.putExtra("Post" , currentPost);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.highlightedMomentImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context , ArtViewActivity.class);
+                intent.putExtra("Post" , currentPost);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

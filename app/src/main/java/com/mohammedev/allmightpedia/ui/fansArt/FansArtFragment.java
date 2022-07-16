@@ -149,7 +149,7 @@ public class FansArtFragment extends Fragment{
         Collections.reverse(fanArtPosts);
 
         if (fanArtPosts.size() > 1){
-            for (int i = fanArtPosts.size() - 1; i >= fanArtPosts.size() - 3; i--){
+            for (int i = 0; i <= 2; i++){
                 highLightedPosts.add(fanArtPosts.get(i));
             }
 

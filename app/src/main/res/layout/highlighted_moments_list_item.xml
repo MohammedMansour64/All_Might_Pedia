@@ -24,7 +24,7 @@
                 android:id="@+id/highlighted_moment_img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="center"
+                android:scaleType="fitXY"
                 android:src="@drawable/highlight_example"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
