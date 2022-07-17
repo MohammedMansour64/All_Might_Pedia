@@ -23,11 +23,11 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_art_view.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_details.xml" value="0.2" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_info_list.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login.xml" value="0.33" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login_register.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_profile.xml" value="0.25" />
-        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_register.xml" value="0.25" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_register.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_sign_in_sign_up.xml" value="0.2222222222222222" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_sign_in_up.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/additional_info_layout.xml" value="0.36666666666666664" />
@@ -35,6 +35,7 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/art_post_layout.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/chat_message_layout.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/content_main.xml" value="0.33" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/edit_profile_layout.xml" value="0.2967079948696024" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_chat.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_fans_art.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_gallery.xml" value="0.33" />
@@ -73,12 +74,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.33" />
-      </ProjectState>
-    </option>
   </component>
 </project>

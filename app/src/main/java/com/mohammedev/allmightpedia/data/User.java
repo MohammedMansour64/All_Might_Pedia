@@ -81,7 +81,7 @@ public class User implements Parcelable {
         return userBio;
     }
 
-    public void setUserBio(String job) {
+    public void setUserBio(String userBio) {
         this.userBio = userBio;
     }
 

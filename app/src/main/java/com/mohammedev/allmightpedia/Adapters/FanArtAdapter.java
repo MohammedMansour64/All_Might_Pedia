@@ -231,14 +231,14 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         likedUsers1.put("test" , "user1");
         likedUsers1.putAll(likedUsers);
         if (likedUsers1 != null) {
-                String userName = CurrentUserData.USER_DATA.getUserName();
+            String userID = CurrentUserData.USER_UID;
 
-                if (likedUsers1.containsValue(userName)) {
-                    return true;
-                } else if (!likedUsers1.containsValue(userName)) {
-                    return false;
-                }
+            if (likedUsers1.containsKey(userID)) {
+                return true;
+            } else if (!likedUsers1.containsKey(userID)) {
                 return false;
+            }
+            return false;
 
         }
         return false;

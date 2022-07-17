@@ -115,12 +115,11 @@ public class FansArtFragment extends Fragment{
                                 for (DataSnapshot posts: snapshot.getChildren()){
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fanPostsList.add(fanArtPost);
-                                }
 
+                                }
+                                getTopLiked(fanPostsList);
                                 fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList);
                                 feedRecyclerView.setAdapter(fanArtAdapter);
-                                getTopLiked(fanPostsList);
-
 
                             }
 
@@ -128,7 +127,10 @@ public class FansArtFragment extends Fragment{
                             public void onCancelled(@NonNull DatabaseError error) {
 
                             }
+
+
                         });
+
                     }
                 }
             }
@@ -144,12 +146,13 @@ public class FansArtFragment extends Fragment{
     }
 
     public void getTopLiked(ArrayList<FanArtPost> fanArtPosts){
+
         ArrayList<FanArtPost> highLightedPosts = new ArrayList<>();
         fanArtPosts.sort(Comparator.comparingInt(FanArtPost::getLikeCounter));
         Collections.reverse(fanArtPosts);
 
-        if (fanArtPosts.size() > 1){
-            for (int i = 0; i <= 2; i++){
+        if (fanArtPosts.size() > 2){
+            for (int i = 0; i < 3; i++){
                 highLightedPosts.add(fanArtPosts.get(i));
             }
 

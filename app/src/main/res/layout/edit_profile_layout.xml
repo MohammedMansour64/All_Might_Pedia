@@ -7,13 +7,11 @@
     tools:context=".ui.profile.ProfileFragment" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/user_image_profile"
+            android:id="@+id/user_edit_image_profile"
             android:layout_width="125dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -26,18 +24,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/squareImageRoundedCorners" />
 
-        <TextView
-            android:id="@+id/user_name_profile"
+        <EditText
+            android:id="@+id/user_name_edit_profile"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/basic"
-            android:text="Mohammed Mansour"
+            android:hint="User Name"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/user_image_profile"
+            app:layout_constraintStart_toEndOf="@+id/user_edit_image_profile"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -50,8 +48,8 @@
             android:text="@string/username"
             android:textColor="#6E6D6D"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/user_image_profile"
-            app:layout_constraintTop_toBottomOf="@+id/user_name_profile" />
+            app:layout_constraintStart_toEndOf="@+id/user_edit_image_profile"
+            app:layout_constraintTop_toBottomOf="@+id/user_name_edit_profile" />
 
         <Button
             android:id="@+id/edit_profile_btn"
@@ -61,21 +59,22 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="#E1BE8A"
             android:fontFamily="sans-serif-thin"
-            android:text="Edit your profile"
+            android:text="Done"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/user_image_profile"
+            app:layout_constraintStart_toEndOf="@+id/user_edit_image_profile"
             app:layout_constraintTop_toBottomOf="@+id/user_email_profile" />
 
-        <TextView
+        <EditText
             android:id="@+id/user_bio_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:text="Have No Fear.. you know why? Because I am Here! ……... Hi Everybody, My name is all might and I am a pro hero  and the world's symbol of peace."
+            android:hint="Bio "
+            android:minHeight="48dp"
             android:textColor="#686868"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -132,11 +131,5 @@
                 tools:listitem="@layout/post_out_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ViewStub
-        android:id="@+id/edit_profile_view_stub"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:visibility="invisible"/>
 
 </androidx.cardview.widget.CardView>

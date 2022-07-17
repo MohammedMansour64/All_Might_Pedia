@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +42,10 @@ public class ProfileFragment extends Fragment {
     private TextView userName , userBio , userEmail;
     private Button editButton;
     private RecyclerView recyclerView;
+    private ConstraintLayout constraintLayout;
+    private ViewStub viewStub;
+    private EditText editProfileNameEditText, editProfileBioEditText;
+    private ImageView editProfileImageView;
     public PostsAdapter postsAdapter;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
 
@@ -56,10 +64,52 @@ public class ProfileFragment extends Fragment {
         userEmail = view.findViewById(R.id.user_email_profile);
         editButton = view.findViewById(R.id.edit_profile_btn);
         recyclerView = view.findViewById(R.id.posts_recycler);
+        constraintLayout = view.findViewById(R.id.profile_fragment_layout);
 
+        // included layout
+        viewStub = view.findViewById(R.id.edit_profile_view_stub);
+        viewStub.setLayoutResource(R.layout.edit_profile_layout);
+        View inflated = viewStub.inflate();
+        inflated.setVisibility(View.INVISIBLE);
+        editProfileNameEditText = inflated.findViewById(R.id.user_name_edit_profile);
+        editProfileImageView = inflated.findViewById(R.id.user_edit_image_profile);
+        editProfileBioEditText = inflated.findViewById(R.id.user_bio_profile);
+        /**--------------------------------------------------------------------------**/
 
         setUserData();
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editProfileNameEditText.setText(userName.getText().toString());
+                editProfileBioEditText.setText(userBio.getText().toString());
+                editProfileImageView.setImageDrawable(userImage.getDrawable());
+                inflated.setVisibility(View.VISIBLE);
+                constraintLayout.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        inflated.findViewById(R.id.edit_profile_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newUserNameString = editProfileNameEditText.getText().toString();
+                String newUserBioString = editProfileBioEditText.getText().toString();
+                editProfile(CurrentUserData.USER_UID , newUserNameString , newUserBioString , "");
+
+                inflated.setVisibility(View.INVISIBLE);
+                constraintLayout.setVisibility(View.VISIBLE);
+            }
+        });
         return view;
+    }
+
+    private void editProfile(String userUID , String newUserName , String newUserBio , String newUserImageUrl){
+     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+     reference.child("users").child(userUID).child("userName").setValue(newUserName);
+     reference.child("users").child(userUID).child("userBio").setValue(newUserBio);
+
+     getUserData(userUID);
+     setUserData();
     }
     
     private void setUserData() {
@@ -79,8 +129,6 @@ public class ProfileFragment extends Fragment {
             
             recyclerView.setAdapter(postsAdapter);
             recyclerView.setLayoutManager(new GridLayoutManager(getContext() , 3));
-        }else{
-            Toast.makeText(getContext(), "Null!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -99,7 +147,10 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 CurrentUserData.USER_DATA = snapshot.getValue(User.class);
-
+                User user = CurrentUserData.USER_DATA;
+                userName.setText(user.getUserName());
+                userBio.setText(user.getUserBio());
+                userEmail.setText(user.getEmail());
                 for (int i = 0; i < fanArtPostArrayList.size(); i++){
                     fanArtPostArrayList.get(i).setUserName(CurrentUserData.USER_DATA.getUserName());
                     fanArtPostArrayList.get(i).setUserImageUrl(CurrentUserData.USER_DATA.getImageUrl());
@@ -109,7 +160,6 @@ public class ProfileFragment extends Fragment {
 
 
                 postsAdapter.updateList(fanArtPostArrayList);
-                postsAdapter.notifyDataSetChanged();
             }
 
             @Override

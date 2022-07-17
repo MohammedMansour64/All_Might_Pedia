@@ -162,6 +162,9 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 CurrentUserData.USER_DATA = snapshot.getValue(User.class);
+                Toast.makeText(MainActivity.this, CurrentUserData.USER_DATA.getUserBio(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, CurrentUserData.USER_DATA.getUserName(), Toast.LENGTH_SHORT).show();
+
             }
 
             @Override

@@ -139,42 +139,47 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void signUp() {
+        String userNameString = userName.getText().toString().trim();
         String userEmailString = userEmail.getText().toString().trim();
         String userPasswordString = userPassword.getText().toString().trim();
 
-        if (userEmailString.isEmpty() | userPasswordString.isEmpty()){
-            Toast.makeText(getApplicationContext(), "Email or Password is empty", Toast.LENGTH_SHORT).show();
-        }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(userEmailString).matches()){
-            userEmail.setError("this email is not valid.");
-            userEmail.requestFocus();
-        }
-        else if (userPasswordString.length() < 6){
-            userPassword.setError("this password is weak!");
-            userPassword.requestFocus();
+        if (userNameString != null && userEmailString != null && userPasswordString != null && imageUri != null){
+            if (userEmailString.isEmpty() | userPasswordString.isEmpty()){
+                Toast.makeText(getApplicationContext(), "Email or Password is empty", Toast.LENGTH_SHORT).show();
+            }
+            else if (!Patterns.EMAIL_ADDRESS.matcher(userEmailString).matches()){
+                userEmail.setError("this email is not valid.");
+                userEmail.requestFocus();
+            }
+            else if (userPasswordString.length() < 6){
+                userPassword.setError("this password is weak!");
+                userPassword.requestFocus();
 
-        }else{
-            mAuth.createUserWithEmailAndPassword(userEmailString, userPasswordString)
-                    .addOnCompleteListener(RegisterActivity.this , new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
-                                user = mAuth.getCurrentUser();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+            }else{
+                mAuth.createUserWithEmailAndPassword(userEmailString, userPasswordString)
+                        .addOnCompleteListener(RegisterActivity.this , new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
+                                    user = mAuth.getCurrentUser();
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                // ...
                             }
-                            // ...
-                        }
-                    });
+                        });
+            }
         }
+
+
     }
 
     private void toStorage() {
-        if (imageUri != null || userName.getText().toString().isEmpty() || userPassword.getText().toString().isEmpty() || userEmail.getText().toString().isEmpty()){
+        if (imageUri != null && userName.getText().toString().isEmpty() && userPassword.getText().toString().isEmpty() && userEmail.getText().toString().isEmpty()){
             storageReference = FirebaseStorage.getInstance().getReference().child("userImages").child(userName.getText().toString() + "." + getExtension(imageUri));
             storageReference.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -207,6 +212,8 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
             });
+        }else{
+            Toast.makeText(this, "one of the data is missing", Toast.LENGTH_SHORT).show();
         }
     }
 
