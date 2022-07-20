@@ -78,9 +78,10 @@ public class AddNewPostActivity extends AppCompatActivity {
 
     private void postArt() {
         uploadPostBtn.setEnabled(false);
+        reference = database.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts");
+        String imageID = reference.push().getKey();
         if(CurrentUserData.USER_UID != null){
-            String userUID = CurrentUserData.USER_UID;
-            storageRef = storage.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts").child(System.currentTimeMillis() + "." +getMimeType(AddNewPostActivity.this, imageUri));
+            storageRef = storage.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts").child(imageID);
             storageRef.putFile(imageUri).continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     throw task.getException();
@@ -96,8 +97,7 @@ public class AddNewPostActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         User user = CurrentUserData.USER_DATA;
-                        reference = database.getReference().child("users").child(mAUth.getCurrentUser().getUid()).child("posts");
-                        String imageID = reference.push().getKey();
+
                         HashMap<String,String> likedUsers = new HashMap<>();
                         likedUsers.put("test" , "test");
                         FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , 0 , imageID , user.getUserName() , user.getImageUrl(), user.getUserID() ,likedUsers);

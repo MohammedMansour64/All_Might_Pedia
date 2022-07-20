@@ -68,7 +68,7 @@ public class InfoListActivity extends AppCompatActivity {
                     InfoItem infoItem1 = infoItem.getValue(InfoItem.class);
                     infoItemList.add(infoItem1);
                     infoListAdapter.notifyDataSetChanged();
-                    infoProgress.setVisibility(View.VISIBLE);
+                    infoProgress.setVisibility(View.INVISIBLE);
                 }
 
             }

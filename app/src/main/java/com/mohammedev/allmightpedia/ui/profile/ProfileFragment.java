@@ -1,5 +1,9 @@
 package com.mohammedev.allmightpedia.ui.profile;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +23,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.mohammedev.allmightpedia.Activities.LoginActivity;
+import com.mohammedev.allmightpedia.Activities.RegisterActivity;
 import com.mohammedev.allmightpedia.Adapters.PostsAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
@@ -33,9 +45,13 @@ import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ProfileFragment extends Fragment {
+    private static final int GET_IMAGE_STORAGE_CODE = 101;
+
     private DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
 
     private ShapeableImageView userImage;
@@ -46,6 +62,7 @@ public class ProfileFragment extends Fragment {
     private ViewStub viewStub;
     private EditText editProfileNameEditText, editProfileBioEditText;
     private ImageView editProfileImageView;
+    private Uri imageUri;
     public PostsAdapter postsAdapter;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
 
@@ -94,29 +111,42 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 String newUserNameString = editProfileNameEditText.getText().toString();
                 String newUserBioString = editProfileBioEditText.getText().toString();
-                editProfile(CurrentUserData.USER_UID , newUserNameString , newUserBioString , "");
+                editProfile(CurrentUserData.USER_UID , newUserNameString , newUserBioString);
 
+                if (imageUri != null){
+                    changeImageStorage(CurrentUserData.USER_UID);
+                    getUserData(CurrentUserData.USER_UID);
+                    setUserData();
+                }
+                getUserData(CurrentUserData.USER_UID);
+                setUserData();
                 inflated.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        editProfileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GalleryIntent();
             }
         });
         return view;
     }
 
-    private void editProfile(String userUID , String newUserName , String newUserBio , String newUserImageUrl){
+    private void editProfile(String userUID , String newUserName , String newUserBio){
      DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
      reference.child("users").child(userUID).child("userName").setValue(newUserName);
      reference.child("users").child(userUID).child("userBio").setValue(newUserBio);
 
-     getUserData(userUID);
-     setUserData();
+
     }
     
     private void setUserData() {
         fanArtPostArrayList = CurrentUserData.USER_FAN_ARTS;
 
         User user = CurrentUserData.USER_DATA;
-        if (user != null || !CurrentUserData.USER_UID.equals("")) {
+        if (user != null && !CurrentUserData.USER_UID.equals("")) {
             Picasso.with(getContext()).load(user.getImageUrl()).into(userImage);
 
             userName.setText(user.getUserName());
@@ -143,6 +173,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getUserData(String userUID) {
+
         databaseReference.child("users").child(userUID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -151,15 +182,7 @@ public class ProfileFragment extends Fragment {
                 userName.setText(user.getUserName());
                 userBio.setText(user.getUserBio());
                 userEmail.setText(user.getEmail());
-                for (int i = 0; i < fanArtPostArrayList.size(); i++){
-                    fanArtPostArrayList.get(i).setUserName(CurrentUserData.USER_DATA.getUserName());
-                    fanArtPostArrayList.get(i).setUserImageUrl(CurrentUserData.USER_DATA.getImageUrl());
-
-                }
-                CurrentUserData.USER_FAN_ARTS = fanArtPostArrayList;
-
-
-                postsAdapter.updateList(fanArtPostArrayList);
+                Picasso.with(getContext()).load(user.getImageUrl()).into(userImage);
             }
 
             @Override
@@ -168,22 +191,59 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        databaseReference.child("users").child(userUID).child("posts").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot data : snapshot.getChildren()){
-                    if (data != null){
-                        FanArtPost fanArtPost = data.getValue(FanArtPost.class);
-                        fanArtPostArrayList.add(fanArtPost);
+
+    }
+
+    public void GalleryIntent() {
+        Intent photoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        photoIntent.setType("image/*");
+        startActivityForResult(photoIntent , GET_IMAGE_STORAGE_CODE);
+
+    }
+
+    public void changeImageStorage(String userID){
+        getUserData(CurrentUserData.USER_UID);
+        setUserData();
+        if (imageUri != null){
+            StorageReference referenceDelete = FirebaseStorage.getInstance().getReference().child("userImages").child(userID);
+            referenceDelete.delete();
+
+            StorageReference reference = FirebaseStorage.getInstance().getReference().child("userImages").child(userID);
+            reference.putFile(imageUri ).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    } else {
+                        return reference.getDownloadUrl();
                     }
                 }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        String url = task.getResult().toString();
+                        Map<String , Object> map = new HashMap<>();
+                        map.put("imageUrl" , url);
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
+                        databaseReference.updateChildren(map);
 
-            }
+                    }else {
+                        System.out.println(task.getException().toString());
+                    }
+                }
+            });
+        }else {
+            Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GET_IMAGE_STORAGE_CODE && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+            editProfileImageView.setImageURI(imageUri);
+        }
     }
 }

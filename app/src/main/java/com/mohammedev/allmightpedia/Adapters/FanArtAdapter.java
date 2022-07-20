@@ -121,6 +121,22 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
             }
         });
 
+        holder.postImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = fansList.get(holder.getAdapterPosition()).getUserID();
+
+                for (User user : userList){
+
+                    if (user.getUserID() != null && user.getUserID().contains(id)){
+                        Intent intent = new Intent(context , ProfileActivity.class);
+                        intent.putExtra("user" , user);
+                        context.startActivity(intent);
+                    }
+                }
+            }
+        });
+
         if (isItLiked){
             holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
         }

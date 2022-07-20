@@ -22,7 +22,7 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_addimage.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_art_view.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_details.xml" value="0.2" />
-        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_info_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_info_list.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_login_register.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/activity_main.xml" value="0.25" />
@@ -48,7 +48,7 @@
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_register.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/fragment_slideshow.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/gallery_favourite_item.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/gallery_recycler_view.xml" value="0.25" />
+        <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/gallery_recycler_view.xml" value="0.5" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/highlighted_moments_list_item.xml" value="0.33" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/info_list_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/layout/login_fragment.xml" value="0.36666666666666664" />

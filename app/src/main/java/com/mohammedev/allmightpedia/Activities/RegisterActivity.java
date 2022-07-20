@@ -8,15 +8,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Patterns;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,13 +29,24 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mohammedev.allmightpedia.Adapters.FanArtAdapter;
 import com.mohammedev.allmightpedia.R;
+import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
+import com.mohammedev.allmightpedia.utils.OnGetDataListener;
+
+import java.util.ArrayList;
+
+import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
 //TODO: implicit intent with imageView, set data in onActivityResult
 
@@ -44,8 +55,9 @@ public class RegisterActivity extends AppCompatActivity {
     private static final int PERMISSIONS_READ_EXTERNAL_STORAGE = 123;
     ImageView userImage;
     EditText userName, userEmail, userPassword;
-    Button registerBtn;
+    CircularProgressButton registerBtn;
     TextView gotoLoginPage;
+    boolean test;
 
     StorageReference storageReference;
     DatabaseReference databaseReference;
@@ -62,15 +74,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         userImage = findViewById(R.id.user_image_nav);
         userName = findViewById(R.id.user_name_edt);
-        userEmail = findViewById(R.id.email_edt);
-        userPassword = findViewById(R.id.password_edt);
+        userEmail = findViewById(R.id.email_edt_register);
+        userPassword = findViewById(R.id.password_edt_register);
         registerBtn = findViewById(R.id.login_btn);
         gotoLoginPage = findViewById(R.id.register_page_text);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toStorage();
+                registerBtn.startAnimation();
+
                 signUp();
             }
         });
@@ -143,6 +156,83 @@ public class RegisterActivity extends AppCompatActivity {
         String userEmailString = userEmail.getText().toString().trim();
         String userPasswordString = userPassword.getText().toString().trim();
 
+        mReadDataOnce(new OnGetDataListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot data) {
+                if (userNameString != null && userEmailString != null && userPasswordString != null && imageUri != null){
+                    if (userEmailString.isEmpty() | userPasswordString.isEmpty()){
+                        Toast.makeText(getApplicationContext(), "Email or Password is empty", Toast.LENGTH_SHORT).show();
+                        registerBtn.revertAnimation();
+                    }
+                    else if (!Patterns.EMAIL_ADDRESS.matcher(userEmailString).matches()){
+                        userEmail.setError("this email is not valid.");
+                        userEmail.requestFocus();
+                        registerBtn.revertAnimation();
+                    }
+                    else if (userPasswordString.length() < 6){
+                        userPassword.setError("this password is weak!");
+                        userPassword.requestFocus();
+                        registerBtn.revertAnimation();
+
+                    }else if (checkUserNames(data , userName)){
+                        userName.setError("Username is already in use, try another");
+                        userName.requestFocus();
+                        registerBtn.revertAnimation();
+                    }else{
+                        mAuth.createUserWithEmailAndPassword(userEmailString, userPasswordString)
+                                .addOnCompleteListener(RegisterActivity.this , new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
+                                            user = mAuth.getCurrentUser();
+                                            toStorage();
+                                            registerBtn.revertAnimation();
+                                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                            finish();
+                                        } else {
+                                            // If sign in fails, display a message to the user.
+                                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            System.out.println(task.getException());
+                                            userEmail.setError(task.getException().getMessage());
+                                            userEmail.requestFocus();
+                                            registerBtn.revertAnimation();
+
+                                        }
+                                        // ...
+                                    }
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+    }
+
+    private void toStorage() {
+        String userNameString = userName.getText().toString().trim();
+        String userEmailString = userEmail.getText().toString().trim();
+        String userPasswordString = userPassword.getText().toString().trim();
+
         if (userNameString != null && userEmailString != null && userPasswordString != null && imageUri != null){
             if (userEmailString.isEmpty() | userPasswordString.isEmpty()){
                 Toast.makeText(getApplicationContext(), "Email or Password is empty", Toast.LENGTH_SHORT).show();
@@ -155,72 +245,76 @@ public class RegisterActivity extends AppCompatActivity {
                 userPassword.setError("this password is weak!");
                 userPassword.requestFocus();
 
-            }else{
-                mAuth.createUserWithEmailAndPassword(userEmailString, userPasswordString)
-                        .addOnCompleteListener(RegisterActivity.this , new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
-                                    user = mAuth.getCurrentUser();
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                // ...
-                            }
-                        });
+            }else {
+                String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                storageReference = FirebaseStorage.getInstance().getReference().child("userImages").child(userUID);
+                storageReference.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        } else {
+                            return storageReference.getDownloadUrl();
+                        }
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+
+
+                            Uri finishedUri = task.getResult();
+                            User userRegisteredData = new User(userName.getText().toString().trim(),
+                                    "",
+                                    finishedUri.toString(),
+                                    userEmail.getText().toString().trim()
+                                    , userUID);
+
+
+                            databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userUID);
+                            databaseReference.setValue(userRegisteredData);
+
+
+                        }
+                    }
+                });
             }
         }
-
-
     }
 
-    private void toStorage() {
-        if (imageUri != null && userName.getText().toString().isEmpty() && userPassword.getText().toString().isEmpty() && userEmail.getText().toString().isEmpty()){
-            storageReference = FirebaseStorage.getInstance().getReference().child("userImages").child(userName.getText().toString() + "." + getExtension(imageUri));
-            storageReference.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()){
-                        throw task.getException();
-                    }else{
-                        return storageReference.getDownloadUrl();
-                    }
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()){
-                        String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                        Uri finishedUri = task.getResult();
-                        User userRegisteredData = new User (userName.getText().toString().trim(),
-                                "",
-                                finishedUri.toString(),
-                                userEmail.getText().toString().trim()
-                        , userUID);
 
 
-                        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userUID);
-                        databaseReference.setValue(userRegisteredData);
-
-                        startActivity(new Intent(RegisterActivity.this , LoginActivity.class));
-                        finish();
-                    }
-                }
-            });
-        }else{
-            Toast.makeText(this, "one of the data is missing", Toast.LENGTH_SHORT).show();
+    public boolean checkUserNames(DataSnapshot data , EditText userNameEdt){
+        ArrayList<User> userList = new ArrayList<>();
+        ArrayList<String> userNamesList = new ArrayList<>();
+        for (DataSnapshot snapshot1 : data.getChildren()){
+            userList.add(snapshot1.getValue(User.class));
         }
+
+        for (int i = 0; i < userList.size(); i++){
+            userNamesList.add(userList.get(i).getUserName());
+        }
+
+        if (userNamesList.contains(userNameEdt.getText().toString())){
+            return true;
+        }
+        return false;
     }
 
+    public void mReadDataOnce(final OnGetDataListener listener) {
+        listener.onStart();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
 
-    private String getExtension(Uri uri){
-        ContentResolver cr = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cr.getType(uri));
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailed(databaseError);
+            }
+        });
     }
+
 }

@@ -103,7 +103,7 @@ public class FansArtFragment extends Fragment{
                     userList.add(users.getValue(User.class));
                 }
 
-                if (userList.size() > 1){
+                if (userList.size() > 0){
                     for (int i = 0; i < userList.size(); i++){
                         Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
                                 .child(userList.get(i).getUserID()).child("posts");
@@ -115,7 +115,6 @@ public class FansArtFragment extends Fragment{
                                 for (DataSnapshot posts: snapshot.getChildren()){
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fanPostsList.add(fanArtPost);
-
                                 }
                                 getTopLiked(fanPostsList);
                                 fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList);
@@ -125,7 +124,6 @@ public class FansArtFragment extends Fragment{
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
                             }
 
 

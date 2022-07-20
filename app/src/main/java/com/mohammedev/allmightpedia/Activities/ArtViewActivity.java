@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mohammedev.allmightpedia.Adapters.PostsAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
@@ -53,6 +55,8 @@ public class ArtViewActivity extends AppCompatActivity {
     private String imageID;
     private String userID;
     private FanArtPost fanArtPost;
+    private StorageReference storageRef;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,5 +251,9 @@ public class ArtViewActivity extends AppCompatActivity {
 
             }
         });
+
+        storage.getReference().child("users").child(userID).child("posts").child(imageID).delete();
+
+
     }
 }
