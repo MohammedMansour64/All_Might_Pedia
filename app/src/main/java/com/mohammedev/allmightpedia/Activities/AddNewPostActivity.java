@@ -101,7 +101,6 @@ public class AddNewPostActivity extends AppCompatActivity {
                         HashMap<String,String> likedUsers = new HashMap<>();
                         likedUsers.put("test" , "test");
                         FanArtPost fanArtPost = new FanArtPost(task.getResult().toString() , 0 , imageID , user.getUserName() , user.getImageUrl(), user.getUserID() ,likedUsers);
-                        System.out.println(imageID);
                         reference.child(imageID).setValue(fanArtPost);
                         finish();
                     }
