@@ -1,20 +1,17 @@
 package com.mohammedev.allmightpedia.ui.gallery;
 
 import android.app.DownloadManager;
-import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +23,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -38,8 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.Activities.LoginActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Image;
-import com.mohammedev.allmightpedia.databinding.FragmentGalleryBinding;
-import com.mohammedev.allmightpedia.databinding.FragmentGalleryListBinding;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.ViewSpaces;
 import com.squareup.picasso.Picasso;
@@ -51,7 +48,6 @@ import java.util.Objects;
 
 public class GalleryFragmentList extends Fragment {
 
-    private FragmentGalleryListBinding binding;
     FirebaseRecyclerAdapter adapter;
     RecyclerView recyclerView;
 
@@ -60,23 +56,18 @@ public class GalleryFragmentList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentGalleryListBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        View root = LayoutInflater.from(getContext()).inflate(R.layout.fragment_gallery_list , container , false);
 
         recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(GalleryFragmentList.this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new ViewSpaces(20));
+
         fetch();
 
 
         return root;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 
     @Override
     public void onStart() {
@@ -112,6 +103,7 @@ public class GalleryFragmentList extends Fragment {
 
                 return new GalleryFragmentList.GalleryListViewHolder(view);
             }
+
 
             @Override
             protected void onBindViewHolder(@NonNull GalleryFragmentList.GalleryListViewHolder viewHolder, int i, @NonNull Image image) {
@@ -162,6 +154,7 @@ public class GalleryFragmentList extends Fragment {
 
 
         };
+
         recyclerView.setAdapter(adapter);
 
 

@@ -88,5 +88,7 @@ dependencies {
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'com.google.firebase:firebase-inappmessaging-display:17.2.0'
     implementation 'com.google.guava:guava:27.0.1-android'
+    implementation 'com.ethanhua:skeleton:1.1.1'
+    implementation 'io.supercharge:shimmerlayout:2.1.0'
 }
 apply plugin: 'com.android.application'

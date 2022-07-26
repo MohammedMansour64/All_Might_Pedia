@@ -1,6 +1,9 @@
 package com.mohammedev.allmightpedia.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -98,7 +101,8 @@ public class MainActivity extends AppCompatActivity{
         });
 
         Menu navMenu = navigationView.getMenu();
-        MenuItem menuItem = navMenu.findItem(R.id.nav_signOut);
+        MenuItem signOutMenu = navMenu.findItem(R.id.nav_signOut);
+        MenuItem signOutTitle = navMenu.findItem(R.id.item_title_sign_out);
 
 
         // Passing each menu ID as a set of Ids because each
@@ -118,9 +122,9 @@ public class MainActivity extends AppCompatActivity{
         FirebaseUser user = mAuth.getCurrentUser();
 
 
-        if (user !=null){
+        if (user != null && checkConnectivity()){
             CurrentUserData.USER_UID = user.getUid();
-            menuItem.setEnabled(true);
+            signOutMenu.setEnabled(true);
             getUserData(user.getUid());
             drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
                 @Override
@@ -152,9 +156,29 @@ public class MainActivity extends AppCompatActivity{
                 }
             });
         }else{
-            menuItem.setEnabled(false);
+            signOutTitle.setTitle("Sign In");
+            signOutMenu.setTitle("Sign In");
+            signOutMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    Intent intent = new Intent(MainActivity.this , RegisterActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
         }
 
+    }
+
+    private boolean checkConnectivity(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        }
+        else
+            return false;
     }
 
     private void getUserData(String userUID) {
@@ -198,23 +222,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 

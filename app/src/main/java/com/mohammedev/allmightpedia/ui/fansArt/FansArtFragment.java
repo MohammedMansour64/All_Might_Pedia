@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -47,9 +49,9 @@ public class FansArtFragment extends Fragment{
     FanArtAdapter fanArtAdapter;
     ArrayList<FanArtPost> fanPostsList = new ArrayList<>();
     FloatingActionButton fabNewPost;
-    ConstraintLayout constraintLayout;
     RecyclerView feedRecyclerView;
     RecyclerView highlightRecyclerView;
+    SkeletonScreen skeletonScreen;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,8 +89,9 @@ public class FansArtFragment extends Fragment{
 
         highlightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         highlightRecyclerView.addItemDecoration(new ViewSpaces(20));
+        skeletonScreen = Skeleton.bind(feedRecyclerView).load(R.layout.layout_img_skeleton).show();
+        skeletonScreen = Skeleton.bind(highlightRecyclerView).load(R.layout.layout_highlighted_skeleton).show();
 
-        constraintLayout = view.findViewById(R.id.constraintLayout);
         fetchFeed();
         return view;
     }
@@ -116,9 +119,11 @@ public class FansArtFragment extends Fragment{
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fanPostsList.add(fanArtPost);
                                 }
+                                skeletonScreen.hide();
                                 getTopLiked(fanPostsList);
                                 fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList);
                                 feedRecyclerView.setAdapter(fanArtAdapter);
+
 
                             }
 

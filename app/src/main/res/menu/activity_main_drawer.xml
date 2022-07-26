@@ -57,7 +57,9 @@
 
 
     <group android:checkableBehavior="single">
-<item android:title="@string/signOut">
+<item
+    android:id="@+id/item_title_sign_out"
+    android:title="@string/signOut">
     <menu>
 
         <item

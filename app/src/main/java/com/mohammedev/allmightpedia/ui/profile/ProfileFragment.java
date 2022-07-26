@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,8 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mohammedev.allmightpedia.Activities.LoginActivity;
-import com.mohammedev.allmightpedia.Activities.RegisterActivity;
 import com.mohammedev.allmightpedia.Adapters.PostsAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
@@ -65,6 +65,7 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     public PostsAdapter postsAdapter;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
+    SkeletonScreen skeletonScreen;
 
 
 
@@ -81,6 +82,8 @@ public class ProfileFragment extends Fragment {
         userEmail = view.findViewById(R.id.user_email_profile);
         editButton = view.findViewById(R.id.edit_profile_btn);
         recyclerView = view.findViewById(R.id.posts_recycler);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext() , 3));
+        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_posts_skeleton).show();
         constraintLayout = view.findViewById(R.id.profile_fragment_layout);
 
         // included layout
@@ -156,9 +159,8 @@ public class ProfileFragment extends Fragment {
 
         if (fanArtPostArrayList != null){
             postsAdapter = new PostsAdapter(fanArtPostArrayList , getContext());
-            
+            skeletonScreen.hide();
             recyclerView.setAdapter(postsAdapter);
-            recyclerView.setLayoutManager(new GridLayoutManager(getContext() , 3));
         }
     }
 

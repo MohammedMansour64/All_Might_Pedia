@@ -43,6 +43,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 
 public class GalleryFragmentFavourites extends Fragment {
@@ -78,7 +79,7 @@ public class GalleryFragmentFavourites extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (CurrentUserData.USER_UID != "" || CurrentUserData.USER_DATA != null){
+        if (!Objects.equals(CurrentUserData.USER_UID, "") && CurrentUserData.USER_DATA != null){
             adapter.startListening();
         }
     }
@@ -86,7 +87,7 @@ public class GalleryFragmentFavourites extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (CurrentUserData.USER_UID != "" || CurrentUserData.USER_DATA != null){
+        if (!Objects.equals(CurrentUserData.USER_UID, "") || CurrentUserData.USER_DATA != null){
             adapter.stopListening();
         }
     }

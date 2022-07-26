@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -124,6 +125,24 @@ public class ArtViewActivity extends AppCompatActivity {
                         likeCounterTxt.setText(String.valueOf(likeCounter));
                         likeFunction(likeCounter,imageID , userID);
                     }
+                }
+            });
+
+            postUserNameTxt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ArtViewActivity.this , ProfileActivity.class);
+                    intent.putExtra("userID" , fanArtPost.getUserID());
+                    startActivity(intent);
+                }
+            });
+
+            postUserImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ArtViewActivity.this , ProfileActivity.class);
+                    intent.putExtra("userID" , fanArtPost.getUserID());
+                    startActivity(intent);
                 }
             });
         }
