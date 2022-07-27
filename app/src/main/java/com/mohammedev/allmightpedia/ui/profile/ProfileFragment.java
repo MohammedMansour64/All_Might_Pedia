@@ -83,7 +83,7 @@ public class ProfileFragment extends Fragment {
         editButton = view.findViewById(R.id.edit_profile_btn);
         recyclerView = view.findViewById(R.id.posts_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext() , 3));
-        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_posts_skeleton).show();
+        skeletonScreen = Skeleton.bind(recyclerView).adapter(postsAdapter).load(R.layout.layout_posts_skeleton).show();
         constraintLayout = view.findViewById(R.id.profile_fragment_layout);
 
         // included layout
@@ -159,8 +159,8 @@ public class ProfileFragment extends Fragment {
 
         if (fanArtPostArrayList != null){
             postsAdapter = new PostsAdapter(fanArtPostArrayList , getContext());
-            skeletonScreen.hide();
             recyclerView.setAdapter(postsAdapter);
+            skeletonScreen.hide();
         }
     }
 

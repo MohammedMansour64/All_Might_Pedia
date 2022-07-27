@@ -52,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         editButton = findViewById(R.id.edit_profile_btn);
         recyclerView = findViewById(R.id.posts_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(this , 3));
+        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_posts_skeleton).show();
 
         setUserData();
     }
