@@ -24,6 +24,32 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/squareImageRoundedCorners" />
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_user_image_view_container"
+            android:layout_width="125dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/user_bio_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <include
+                layout="@layout/layout_posts_skeleton"
+                android:layout_width="0dp"
+                android:layout_height="125dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_marginBottom="8dp"
+                android:gravity="center" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
         <TextView
             android:id="@+id/user_name_profile"
             android:layout_width="wrap_content"
@@ -85,6 +111,126 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider">
+
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="64dp"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView30">
+
+                <!-- Adding 7 rows of placeholders -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3">
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <include layout="@layout/layout_posts_skeleton"
+                        android:layout_width="0dp"
+                        android:layout_height="125dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                </GridLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <TextView
                 android:id="@+id/textView30"

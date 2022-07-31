@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ethanhua.skeleton.Skeleton;
-import com.ethanhua.skeleton.SkeletonScreen;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +23,7 @@ import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.OnGetDataListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     public PostsAdapter postsAdapter;
     User user;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
-    SkeletonScreen skeletonScreen;
+    ShimmerFrameLayout postsShimmerLayout;
+    ShimmerFrameLayout userImageShimmerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,12 @@ public class ProfileActivity extends AppCompatActivity {
         editButton = findViewById(R.id.edit_profile_btn);
         recyclerView = findViewById(R.id.posts_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(this , 3));
-        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_posts_skeleton).show();
-
+        postsShimmerLayout = findViewById(R.id.shimmer_view_container);
+        postsShimmerLayout.setVisibility(View.VISIBLE);
+        postsShimmerLayout.startShimmer();
+        userImageShimmerLayout = findViewById(R.id.shimmer_user_image_view_container);
+        userImageShimmerLayout.setVisibility(View.VISIBLE);
+        userImageShimmerLayout.startShimmer();
         setUserData();
     }
 
@@ -65,7 +71,17 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         if (user != null){
-            Picasso.with(this).load(user.getImageUrl()).into(userImage);
+            Picasso.with(this).load(user.getImageUrl()).into(userImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                    userImageShimmerLayout.stopShimmer();
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
 
             userName.setText(user.getUserName());
             userBio.setText(user.getUserBio());
@@ -90,8 +106,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            postsAdapter = new PostsAdapter(fanArtPostArrayList , this);
+            postsAdapter = new PostsAdapter(fanArtPostArrayList , this , postsShimmerLayout);
             recyclerView.setAdapter(postsAdapter);
+            postsShimmerLayout.stopShimmer();
             recyclerView.setLayoutManager(new GridLayoutManager(this , 3));
         }else{
             String userID = bundle.getString("userID");
@@ -147,9 +164,10 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            postsAdapter = new PostsAdapter(fanArtPostArrayList , ProfileActivity.this);
+            postsAdapter = new PostsAdapter(fanArtPostArrayList , ProfileActivity.this , postsShimmerLayout);
             recyclerView.setAdapter(postsAdapter);
             recyclerView.setLayoutManager(new GridLayoutManager(ProfileActivity.this , 3));
+            postsShimmerLayout.stopShimmer();
                 }
 
                 @Override

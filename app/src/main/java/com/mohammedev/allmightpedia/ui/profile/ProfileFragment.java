@@ -23,8 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ethanhua.skeleton.Skeleton;
-import com.ethanhua.skeleton.SkeletonScreen;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +41,7 @@ import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.FanArtPost;
 import com.mohammedev.allmightpedia.data.User;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -65,7 +65,8 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     public PostsAdapter postsAdapter;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
-    SkeletonScreen skeletonScreen;
+    ShimmerFrameLayout postsShimmerLayout;
+    ShimmerFrameLayout userImageShimmerLayout;
 
 
 
@@ -83,8 +84,15 @@ public class ProfileFragment extends Fragment {
         editButton = view.findViewById(R.id.edit_profile_btn);
         recyclerView = view.findViewById(R.id.posts_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext() , 3));
-        skeletonScreen = Skeleton.bind(recyclerView).adapter(postsAdapter).load(R.layout.layout_posts_skeleton).show();
         constraintLayout = view.findViewById(R.id.profile_fragment_layout);
+
+        postsShimmerLayout = view.findViewById(R.id.shimmer_view_container);
+        postsShimmerLayout.setVisibility(View.VISIBLE);
+        postsShimmerLayout.startShimmer();
+
+        userImageShimmerLayout = view.findViewById(R.id.shimmer_user_image_view_container);
+        userImageShimmerLayout.setVisibility(View.VISIBLE);
+        userImageShimmerLayout.startShimmer();
 
         // included layout
         viewStub = view.findViewById(R.id.edit_profile_view_stub);
@@ -150,7 +158,17 @@ public class ProfileFragment extends Fragment {
 
         User user = CurrentUserData.USER_DATA;
         if (user != null && !CurrentUserData.USER_UID.equals("")) {
-            Picasso.with(getContext()).load(user.getImageUrl()).into(userImage);
+            Picasso.with(getContext()).load(user.getImageUrl()).into(userImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                    userImageShimmerLayout.stopShimmer();
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
 
             userName.setText(user.getUserName());
             userBio.setText(user.getUserBio());
@@ -158,9 +176,9 @@ public class ProfileFragment extends Fragment {
         }
 
         if (fanArtPostArrayList != null){
-            postsAdapter = new PostsAdapter(fanArtPostArrayList , getContext());
+            postsAdapter = new PostsAdapter(fanArtPostArrayList , getContext() , postsShimmerLayout);
             recyclerView.setAdapter(postsAdapter);
-            skeletonScreen.hide();
+            postsShimmerLayout.stopShimmer();
         }
     }
 

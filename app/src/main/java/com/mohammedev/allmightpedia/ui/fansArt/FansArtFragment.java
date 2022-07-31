@@ -119,9 +119,8 @@ public class FansArtFragment extends Fragment{
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fanPostsList.add(fanArtPost);
                                 }
-                                skeletonScreen.hide();
                                 getTopLiked(fanPostsList);
-                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList);
+                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList , skeletonScreen);
                                 feedRecyclerView.setAdapter(fanArtAdapter);
 
 

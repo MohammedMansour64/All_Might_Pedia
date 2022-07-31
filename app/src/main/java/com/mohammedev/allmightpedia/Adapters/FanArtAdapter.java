@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +35,7 @@ import com.mohammedev.allmightpedia.data.User;
 import com.mohammedev.allmightpedia.ui.profile.ProfileFragment;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
 import com.mohammedev.allmightpedia.utils.DoubleClickListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.sql.SQLOutput;
@@ -55,11 +57,13 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
     ArrayList<User> userList;
     FanArtPost currentFanArtPost;
     FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
+    SkeletonScreen shimmer;
 
-    public FanArtAdapter(ArrayList<FanArtPost> fansList, Context context , ArrayList<User> userList) {
+    public FanArtAdapter(ArrayList<FanArtPost> fansList, Context context , ArrayList<User> userList , SkeletonScreen shimmer) {
         this.fansList = fansList;
         this.context = context;
         this.userList = userList;
+        this.shimmer = shimmer;
         sortByLikes(fansList);
     }
 
@@ -83,7 +87,17 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         holder.likeCounterTxt.setText(String.valueOf(currentFanArtPost.getLikeCounter()));
 
         Picasso.with(context).load(currentFanArtPost.getUserImageUrl()).into(holder.userImage);
-        Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage);
+        Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage, new Callback() {
+            @Override
+            public void onSuccess() {
+                shimmer.hide();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
 
 
         holder.userImage.setOnClickListener(new View.OnClickListener() {
