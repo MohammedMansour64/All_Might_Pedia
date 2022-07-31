@@ -96,8 +96,9 @@ public class ProfileActivity extends AppCompatActivity {
                         fanArtPostArrayList.add(fanArtPost);
                     }
 
-                    postsAdapter.updateList(fanArtPostArrayList);
-                    postsAdapter.notifyDataSetChanged();
+                    postsAdapter = new PostsAdapter(fanArtPostArrayList , ProfileActivity.this , postsShimmerLayout);
+                    recyclerView.setAdapter(postsAdapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(ProfileActivity.this , 3));
                 }
 
                 @Override
@@ -106,10 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            postsAdapter = new PostsAdapter(fanArtPostArrayList , this , postsShimmerLayout);
-            recyclerView.setAdapter(postsAdapter);
-            postsShimmerLayout.stopShimmer();
-            recyclerView.setLayoutManager(new GridLayoutManager(this , 3));
+
         }else{
             String userID = bundle.getString("userID");
             databaseReference.child("users").child(userID).addValueEventListener(new ValueEventListener() {
@@ -150,7 +148,6 @@ public class ProfileActivity extends AppCompatActivity {
                     }
 
                     postsAdapter.updateList(fanArtPostArrayList);
-                    postsAdapter.notifyDataSetChanged();
 
                     if (fanArtPostArrayList != null && user.getUserID() != null){
                         getUserData(user.getUserID());

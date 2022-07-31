@@ -6,9 +6,6 @@ import android.os.Bundle;
 
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,13 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,7 +44,8 @@ public class FansArtFragment extends Fragment{
     FloatingActionButton fabNewPost;
     RecyclerView feedRecyclerView;
     RecyclerView highlightRecyclerView;
-    SkeletonScreen skeletonScreen;
+    SkeletonScreen postsSkeletonScreen;
+    SkeletonScreen highlightSkeletonScreen;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,8 +83,8 @@ public class FansArtFragment extends Fragment{
 
         highlightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         highlightRecyclerView.addItemDecoration(new ViewSpaces(20));
-        skeletonScreen = Skeleton.bind(feedRecyclerView).load(R.layout.layout_img_skeleton).show();
-        skeletonScreen = Skeleton.bind(highlightRecyclerView).load(R.layout.layout_highlighted_skeleton).show();
+        postsSkeletonScreen = Skeleton.bind(feedRecyclerView).load(R.layout.layout_img_skeleton).show();
+        highlightSkeletonScreen = Skeleton.bind(highlightRecyclerView).load(R.layout.layout_highlighted_skeleton).show();
 
         fetchFeed();
         return view;
@@ -120,7 +114,7 @@ public class FansArtFragment extends Fragment{
                                     fanPostsList.add(fanArtPost);
                                 }
                                 getTopLiked(fanPostsList);
-                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList , skeletonScreen);
+                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList , postsSkeletonScreen);
                                 feedRecyclerView.setAdapter(fanArtAdapter);
 
 

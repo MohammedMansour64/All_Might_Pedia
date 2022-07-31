@@ -109,8 +109,6 @@ public class RegisterActivity extends AppCompatActivity {
     private void checkPermissionAndReadStorage() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))
-            {
                 AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.accessStorage).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -129,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                 alertDialog.show();
-            }
+
         }else{
             GalleryIntent();
         }

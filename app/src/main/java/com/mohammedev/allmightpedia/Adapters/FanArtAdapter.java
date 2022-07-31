@@ -90,7 +90,7 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         Picasso.with(context).load(currentFanArtPost.getPostImageUrl()).into(holder.postImage, new Callback() {
             @Override
             public void onSuccess() {
-                shimmer.hide();
+
             }
 
             @Override

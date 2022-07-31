@@ -116,8 +116,6 @@ public class AddNewPostActivity extends AppCompatActivity {
     private void checkPermissionAndReadStorage() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))
-            {
                 AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.accessStorage).setPositiveButton("Yes", (dialog, which) -> ActivityCompat.requestPermissions(AddNewPostActivity.this, new String[] {
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE
                         },
@@ -125,7 +123,7 @@ public class AddNewPostActivity extends AppCompatActivity {
 
 
                 alertDialog.show();
-            }
+
         }else{
             GalleryIntent();
         }
