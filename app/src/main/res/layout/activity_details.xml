@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="-30dp"
-        android:background="#AFAFAF"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,20 +22,31 @@
             android:id="@+id/view_pager2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollIndicators="bottom"/>
+            android:scrollIndicators="bottom" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabDots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#00000000"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+
     </FrameLayout>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:layout_marginTop="-30dp"
+        android:layout_height="400dp"
         android:background="@drawable/rounded_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/video_photo_container">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/info_title"

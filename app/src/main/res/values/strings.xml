@@ -44,4 +44,9 @@
     <string name="username">\@shalia.kwt@outlook.com</string>
     <string name="profile">Profile</string>
     <string name="main">Main</string>
+
+    <integer-array name="img_id_arr">
+        <item>@drawable/tab_selector</item>
+        <item>@drawable/tab_selector</item>
+    </integer-array>
 </resources>

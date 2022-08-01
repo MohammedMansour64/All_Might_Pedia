@@ -9,8 +9,13 @@ import com.mohammedev.allmightpedia.utils.DetailsActivityPhotoFragment;
 import com.mohammedev.allmightpedia.utils.DetailsActivityVideoFragment;
 
 public class DetailsActivityVIewPagerAdapter extends FragmentStateAdapter {
-    public DetailsActivityVIewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+
+    String videoUrl;
+    String photoUrl;
+    public DetailsActivityVIewPagerAdapter(@NonNull FragmentActivity fragmentActivity , String videoUrl , String photoUrl) {
         super(fragmentActivity);
+        this.videoUrl = videoUrl;
+        this.photoUrl = photoUrl;
     }
 
     @NonNull
@@ -18,10 +23,10 @@ public class DetailsActivityVIewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 0:
-                return new DetailsActivityPhotoFragment();
+                return new DetailsActivityPhotoFragment(photoUrl);
 
             case 1:
-                return new DetailsActivityVideoFragment();
+                return new DetailsActivityVideoFragment(videoUrl);
         }
         return null;
     }
