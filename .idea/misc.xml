@@ -7,24 +7,27 @@
         <entry key="..\:/Users/DELL/.gradle/caches/transforms-3/abf6f09b70e195ba888299d7a134f70a/transformed/jetified-firebase-inappmessaging-display-20.1.0/res/drawable/rounded_layout.xml" value="0.2385" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/bg_grid_item.xml" value="0.226" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/default_dot.xml" value="0.265" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/image_red_border.xml" value="0.2295" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/rounded_corners.xml" value="0.226" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/rounded_layout.xml" value="0.2385" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/selected_dot.xml" value="0.265" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/tab_selector.xml" value="0.9" />
-        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_details.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/drawable/thick_red_border.xml" value="0.2295" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_details.xml" value="0.25" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_info_list.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_profile.xml" value="0.2975630611372381" />
-        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/additional_info_layout.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/additional_info_layout.xml" value="0.33" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/details_activity_photo_layout.xml" value="0.2967079948696024" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/details_activity_video_layout.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_fans_art.xml" value="0.22756119673617406" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_gallery.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_gallery_list.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_home.xml" value="0.2857142857142857" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_profile.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/gallery_favourite_item.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/gallery_recycler_view.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/highlighted_moments_list_item.xml" value="0.67" />
-        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/info_list_layout.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/info_list_layout.xml" value="0.38322813345356177" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/layout_gallery_list_skeleton.xml" value="0.33" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/layout_highlighted_skeleton.xml" value="0.22756119673617406" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/layout_img_skeleton.xml" value="0.25" />

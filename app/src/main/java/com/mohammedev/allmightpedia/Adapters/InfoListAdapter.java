@@ -20,10 +20,12 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class InfoListAdapter extends ArrayAdapter<InfoItem> {
     private final ArrayList<InfoItem> infoItemList;
+    private String itemCategoryString;
 
-    public InfoListAdapter(@NonNull Context context, int resource, ArrayList<InfoItem> infoItemList) {
+    public InfoListAdapter(@NonNull Context context, int resource, ArrayList<InfoItem> infoItemList , String itemCategoryString) {
         super(context, resource, infoItemList);
         this.infoItemList = infoItemList;
+        this.itemCategoryString = itemCategoryString;
     }
 
     @NonNull
@@ -32,6 +34,8 @@ public class InfoListAdapter extends ArrayAdapter<InfoItem> {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.info_list_layout, parent , false);
         InfoItem infoItem = infoItemList.get(position);
         TextView infoTitle = view.findViewById(R.id.info_title);
+        TextView subTitle = view.findViewById(R.id.info_subtitle);
+        subTitle.setText(itemCategoryString);
         GifImageView gifImageView = view.findViewById(R.id.info_image);
         infoTitle.setText(infoItem.getInfoTitle());
         Picasso.with(getContext()).load(infoItem.getInfoImageUrl()).into(gifImageView);

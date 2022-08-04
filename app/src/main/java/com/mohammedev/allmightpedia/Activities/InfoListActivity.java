@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,11 +39,13 @@ public class InfoListActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         String infoTypeString = bundle.getString("infoType");
+        String infoTypeText = bundle.getString("infoTypeText");
+
 
         BackgroundTask backgroundTask = new BackgroundTask(infoTypeString);
         backgroundTask.start();
 
-        infoListAdapter = new InfoListAdapter(InfoListActivity.this, 0 , infoItemList);
+        infoListAdapter = new InfoListAdapter(InfoListActivity.this, 0 , infoItemList , infoTypeText);
 
         listView.setAdapter(infoListAdapter);
 

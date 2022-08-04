@@ -46,7 +46,6 @@ public class HomeFragment extends Fragment {
 
         ListView additionalInfoListView = binding.listView;
         AdditionalInfoAdapter additionalInfoAdapter = new AdditionalInfoAdapter(getContext(), 0, additionalInfoArray);
-
         additionalInfoListView.setAdapter(additionalInfoAdapter);
 
         additionalInfoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -56,24 +55,29 @@ public class HomeFragment extends Fragment {
                 switch (position){
                     case 0:
                         listActivityIntent.putExtra("infoType" , "all_might_smashes");
+                        listActivityIntent.putExtra("infoTypeText" , "All Might Smashes");
                         startActivity(listActivityIntent);
 
                       break;
                   case 1:
                       listActivityIntent.putExtra("infoType" , "all_might_hero_ages");
+                      listActivityIntent.putExtra("infoTypeText" , "All Might Hero Ages");
                       startActivity(listActivityIntent);
                       break;
                   case 2:
                       listActivityIntent.putExtra("infoType" , "all_might_fights");
+                      listActivityIntent.putExtra("infoTypeText" , "All Might Fights");
                       startActivity(listActivityIntent);
 
                       break;
                   case 3:
                       listActivityIntent.putExtra("infoType" , "all_might_outfits");
+                      listActivityIntent.putExtra("infoTypeText" , "All Might Outfits");
                       startActivity(listActivityIntent);
                       break;
                   case 4:
                       listActivityIntent.putExtra("infoType" , "more_all_might");
+                      listActivityIntent.putExtra("infoTypeText" , "More All Might info");
                       startActivity(listActivityIntent);
                         break;
                 }
