@@ -35,10 +35,11 @@
                     android:id="@+id/nav_quiz"
                     android:icon="@drawable/ic_menu_quiz"
                     android:title="@string/menu_Quiz" />
+
                 <item
-                    android:id="@+id/nav_sound"
-                    android:icon="@drawable/ic_mic"
-                    android:title="@string/all_might_soundpad" />
+                    android:id="@+id/nav_art"
+                    android:title="@string/fanArtTab"
+                    android:icon="@drawable/ic_fan_art"/>
 
                 <item
                     android:id="@+id/nav_chat"
@@ -46,10 +47,14 @@
                     android:title="@string/live_chat"/>
 
                 <item
-                    android:id="@+id/nav_art"
-                    android:title="@string/fanArtTab"
-                    android:icon="@drawable/ic_fan_art"/>
+                    android:id="@+id/nav_sound"
+                    android:icon="@drawable/ic_mic"
+                    android:title="@string/all_might_soundpad" />
 
+                <item
+                    android:id="@+id/about"
+                    android:icon="@drawable/ic_about_me"
+                    android:title="About me"/>
             </menu>
 
         </item>
