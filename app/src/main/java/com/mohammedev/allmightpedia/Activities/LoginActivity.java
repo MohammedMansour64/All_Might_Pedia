@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -58,33 +62,45 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
     private void signIn(){
-        mAuth.signInWithEmailAndPassword(emailEdt.getText().toString().trim(), passwordEdt.getText().toString().trim())
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        CurrentUserData.USER_UID = user.getUid();
+        String emailEdtString = emailEdt.getText().toString().trim();
+        String passwordEdtString = passwordEdt.getText().toString().trim();
+        if (emailEdtString.isEmpty()){
+            emailEdt.setError("this Field is missing");
+            emailEdt.requestFocus();
+            signBtn.revertAnimation();
+        }else if (passwordEdtString.isEmpty()){
+            passwordEdt.setError("this Field is missing");
+            passwordEdt.requestFocus();
+            signBtn.revertAnimation();
+        }else{
+            mAuth.signInWithEmailAndPassword(emailEdtString, passwordEdtString)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            CurrentUserData.USER_UID = user.getUid();
 
 
-                        databaseReference.child("users").child(CurrentUserData.USER_UID).get().addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()){
-                                User user1 = Objects.requireNonNull(task1.getResult()).getValue(User.class);
-                                CurrentUserData.USER_DATA = user1;
-                                Toast.makeText(LoginActivity.this, "Welcome " + Objects.requireNonNull(user1).getUserName() , Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        signBtn.revertAnimation();
-                        Intent backToMain = new Intent(LoginActivity.this , MainActivity.class);
-                        startActivity(backToMain);
-                        finish();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.v("signInWithEmail:failure " , String.valueOf(task.getException()));
-                        Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
-                        signBtn.revertAnimation();
-                    }
-                });
+                            databaseReference.child("users").child(CurrentUserData.USER_UID).get().addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()){
+                                    User user1 = Objects.requireNonNull(task1.getResult()).getValue(User.class);
+                                    CurrentUserData.USER_DATA = user1;
+                                    Toast.makeText(LoginActivity.this, "Welcome " + Objects.requireNonNull(user1).getUserName() , Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            signBtn.revertAnimation();
+                            Intent backToMain = new Intent(LoginActivity.this , MainActivity.class);
+                            startActivity(backToMain);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.v("signInWithEmail:failure " , String.valueOf(task.getException()));
+                            Toast.makeText(this, "Login Failed, invalid data", Toast.LENGTH_SHORT).show();
+                            signBtn.revertAnimation();
+                        }
+                    });
+        }
     }
 
     @Override

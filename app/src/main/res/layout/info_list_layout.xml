@@ -9,11 +9,12 @@
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_item_constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/thick_red_border">
 
-        <pl.droidsonroids.gif.GifImageView
+        <ImageView
             android:id="@+id/info_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -22,10 +23,10 @@
             android:layout_marginBottom="8dp"
             android:src="@drawable/all_might"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_max="wrap"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:layout_constraintHeight_max="wrap"/>
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/info_title"

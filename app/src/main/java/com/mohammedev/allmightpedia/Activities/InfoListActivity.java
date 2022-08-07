@@ -2,16 +2,20 @@ package com.mohammedev.allmightpedia.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -23,7 +27,7 @@ import java.util.ArrayList;
 
 public class InfoListActivity extends AppCompatActivity {
     ArrayList<InfoItem> infoItemList = new ArrayList<>();
-    ListView listView;
+    RecyclerView recyclerView;
     InfoListAdapter infoListAdapter;
     ProgressBar infoProgress;
     @Override
@@ -34,66 +38,41 @@ public class InfoListActivity extends AppCompatActivity {
          infoProgress= findViewById(R.id.info_progress);
 
 
-        listView = findViewById(R.id.listView_info);
+        recyclerView = findViewById(R.id.recyclerview_info);
 
         Bundle bundle = getIntent().getExtras();
 
         String infoTypeString = bundle.getString("infoType");
         String infoTypeText = bundle.getString("infoTypeText");
 
+        fetchInfoList(infoTypeString , infoTypeText);
 
-        BackgroundTask backgroundTask = new BackgroundTask(infoTypeString);
-        backgroundTask.start();
-
-        infoListAdapter = new InfoListAdapter(InfoListActivity.this, 0 , infoItemList , infoTypeText);
-
-        listView.setAdapter(infoListAdapter);
-
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            InfoItem clickedItem = infoItemList.get(position);
-
-            Intent detailsIntent = new Intent(InfoListActivity.this , DetailsActivity.class);
-            detailsIntent.putExtra("infoItem" , clickedItem);
-            startActivity(detailsIntent);
-        });
 
     }
 
-    public void fetchInfoList(String listName){
+    public void fetchInfoList(String infoType , String infoTypeText){
         infoProgress.setVisibility(View.VISIBLE);
-        Query query = FirebaseDatabase.getInstance().getReference().child("additionalInfo").child(listName);
-        query.addValueEventListener(new ValueEventListener() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("additionalInfo").child(infoType);
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                infoItemList.clear();
                 for (DataSnapshot infoItem: snapshot.getChildren()){
                     InfoItem infoItem1 = infoItem.getValue(InfoItem.class);
                     infoItemList.add(infoItem1);
-                    infoListAdapter.notifyDataSetChanged();
-                    infoProgress.setVisibility(View.INVISIBLE);
-                }
 
+                }
+                System.out.println(infoItemList.size());
+                infoListAdapter = new InfoListAdapter(infoItemList , infoTypeText , InfoListActivity.this);
+
+                recyclerView.setAdapter(infoListAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(InfoListActivity.this , RecyclerView.VERTICAL , false));
+                infoProgress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println("There was an error:" + error.getDetails());
+
             }
         });
-    }
-
-    class BackgroundTask extends Thread{
-        String infoType;
-        public BackgroundTask(String infoType) {
-            this.infoType = infoType;
-        }
-
-        @Override
-        public void run() {
-
-            fetchInfoList(infoType);
-
-        }
     }
 }

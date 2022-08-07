@@ -8,10 +8,12 @@
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifImageView"
-        android:layout_width="204dp"
-        android:layout_height="189dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="24dp"
         android:src="@drawable/nice_view_all_might"
+        app:layout_constraintBottom_toTopOf="@+id/textView11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,51 +21,61 @@
 
     <ImageView
         android:id="@+id/user_image_nav"
-        android:layout_width="0dp"
+        android:layout_width="125dp"
         android:layout_height="125dp"
+        android:layout_marginStart="16dp"
         android:src="@drawable/ic_image"
         app:layout_constraintBottom_toTopOf="@+id/login_btn"
-        app:layout_constraintEnd_toStartOf="@+id/email_edt_register"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <EditText
         android:id="@+id/user_name_edt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="username"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/email_edt_register"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/user_image_nav"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <EditText
         android:id="@+id/email_edt_register"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="E-mail"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/password_edt_register"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/user_image_nav"
         app:layout_constraintTop_toBottomOf="@+id/user_name_edt" />
 
     <EditText
         android:id="@+id/password_edt_register"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="26dp"
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/login_btn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/user_image_nav"
         app:layout_constraintTop_toBottomOf="@+id/email_edt_register" />
 
     <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
@@ -71,7 +83,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:text="Create Account"
         app:layout_constraintBottom_toTopOf="@+id/register_page_text"
@@ -79,7 +90,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_edt_register" />
-
 
 
     <TextView
@@ -101,12 +111,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/fjalla_one"
         android:text="Create Account"
         android:textColor="#000000"
         android:textSize="28sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/user_name_edt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gifImageView" />
 

@@ -38,7 +38,7 @@ public class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightedPos
     @NonNull
     @Override
     public HighlightedPostsAdapter.HighlightedPostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.highlighted_moments_list_item , parent , false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.moments_list_item , parent , false);
 
         return new HighlightedPostsAdapter.HighlightedPostsViewHolder(view);
     }

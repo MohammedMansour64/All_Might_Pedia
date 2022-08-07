@@ -52,4 +52,8 @@
         android:name="com.mohammedev.allmightpedia.ui.profile.ProfileFragment"
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/nav_about_me"
+        android:name="com.mohammedev.allmightpedia.ui.AboutMeFragment"
+        android:label="About me" />
 </navigation>

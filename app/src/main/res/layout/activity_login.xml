@@ -8,10 +8,12 @@
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifImageView"
-        android:layout_width="265dp"
-        android:layout_height="204dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="0dp"
+        android:layout_height="225dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
         android:src="@drawable/yagi_toshinori"
+        app:layout_constraintBottom_toTopOf="@+id/textView11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,30 +21,34 @@
 
     <EditText
         android:id="@+id/email_edt"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="E-mail"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/password_edt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <EditText
         android:id="@+id/password_edt"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/login_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,47 +59,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:text="Sign In"
+        app:layout_constraintBottom_toTopOf="@+id/register_page_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_edt" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/register_page_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="Don't have an account? Sign Up!"
         android:textColor="#4857E1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_btn" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:fontFamily="@font/fjalla_one"
         android:text="Welcome Back"
         android:textColor="#000000"
         android:textSize="28sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/email_edt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gifImageView" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.51" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

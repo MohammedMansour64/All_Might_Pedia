@@ -48,7 +48,6 @@ import java.util.ArrayList;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
-//TODO: implicit intent with imageView, set data in onActivityResult
 
 public class RegisterActivity extends AppCompatActivity {
     private static final int GET_IMAGE_STORAGE_CODE = 101;

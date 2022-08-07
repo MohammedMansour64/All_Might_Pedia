@@ -1,6 +1,7 @@
 package com.mohammedev.allmightpedia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
@@ -275,4 +276,6 @@ public class ArtViewActivity extends AppCompatActivity {
 
 
     }
+
+
 }

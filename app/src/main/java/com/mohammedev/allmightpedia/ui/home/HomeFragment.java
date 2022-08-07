@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment {
         additionalInfoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent listActivityIntent = new Intent(getActivity() , InfoListActivity.class);
+                Intent listActivityIntent = new Intent(getContext() , InfoListActivity.class);
                 switch (position){
                     case 0:
                         listActivityIntent.putExtra("infoType" , "all_might_smashes");

@@ -38,13 +38,12 @@
         android:id="@+id/highlighted_moments_recy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_slideshow"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/highlighted_moments_list_item" >
+        tools:listitem="@layout/highlighted_moments_list_item">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -59,5 +58,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_slideshow2"
         app:spanCount="2"
-        tools:listitem="@layout/highlighted_moments_list_item" />
+        tools:listitem="@layout/moments_list_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
