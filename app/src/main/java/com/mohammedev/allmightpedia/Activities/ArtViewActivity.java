@@ -241,9 +241,19 @@ public class ArtViewActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.post_menu , menu);
-        return true;
+        if (userID != null){
+            if (CurrentUserData.USER_UID == userID){
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.post_menu , menu);
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            System.out.println("NUll!!");
+        }
+
+        return false;
     }
 
     @Override

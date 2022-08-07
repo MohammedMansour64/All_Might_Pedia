@@ -39,7 +39,7 @@
     </FrameLayout>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -53,7 +53,7 @@
         <TextView
             android:id="@+id/info_title"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:background="#7C0606"
             android:fontFamily="@font/fjalla_one"
             android:gravity="center"
@@ -62,24 +62,23 @@
             android:text="Detroit Smash"
             android:textColor="@color/white"
             android:textColorHighlight="#957171"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/info_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_below="@+id/info_title"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="18dp"
             android:fontFamily="@font/fjalla_one"
             android:text="Detroit Smash is All Might's signature move that Izuku later mimics after inheriting One For All. The move is a simple punch focusing One For All's stockpiling power into the fist. All Might's punches at 100% are capable of creating wind pressure so powerful it can change the weather."
             android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/info_title" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:textSize="18sp" />
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
