@@ -187,12 +187,9 @@ public class RegisterActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
                                             // Sign in success, update UI with the signed-in user's information
-                                            Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
                                             user = mAuth.getCurrentUser();
                                             toStorage();
-                                            registerBtn.revertAnimation();
-                                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                            finish();
+
                                         } else {
                                             // If sign in fails, display a message to the user.
                                             Toast.makeText(RegisterActivity.this, "Authentication failed.",
@@ -215,13 +212,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-
-
 
     }
 
@@ -271,7 +261,10 @@ public class RegisterActivity extends AppCompatActivity {
                             databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userUID);
                             databaseReference.setValue(userRegisteredData);
 
-
+                            Toast.makeText(RegisterActivity.this, "Authenticated Successfully", Toast.LENGTH_SHORT).show();
+                            registerBtn.revertAnimation();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            finish();
                         }
                     }
                 });

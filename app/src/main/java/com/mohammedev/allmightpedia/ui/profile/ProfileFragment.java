@@ -2,6 +2,8 @@ package com.mohammedev.allmightpedia.ui.profile;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -28,6 +33,11 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,26 +58,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.droidsonroids.gif.GifImageView;
+
 
 public class ProfileFragment extends Fragment {
     private static final int GET_IMAGE_STORAGE_CODE = 101;
 
-    private DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     private ShapeableImageView userImage;
-    private TextView userName , userBio , userEmail;
+    private TextView userName, userBio, userEmail;
     private Button editButton;
     private RecyclerView recyclerView;
     private ConstraintLayout constraintLayout;
     private ViewStub viewStub;
     private EditText editProfileNameEditText, editProfileBioEditText;
     private ImageView editProfileImageView;
+    private GifImageView noResultGifImage;
+    private TextView noResultTextView;
     private Uri imageUri;
     public PostsAdapter postsAdapter;
     ArrayList<FanArtPost> fanArtPostArrayList = new ArrayList<>();
     ShimmerFrameLayout postsShimmerLayout;
     ShimmerFrameLayout userImageShimmerLayout;
-
 
 
     @Nullable
@@ -82,8 +95,10 @@ public class ProfileFragment extends Fragment {
         userBio = view.findViewById(R.id.user_bio_profile);
         userEmail = view.findViewById(R.id.user_email_profile);
         editButton = view.findViewById(R.id.edit_profile_btn);
+        noResultGifImage = view.findViewById(R.id.no_posts_gif);
+        noResultTextView = view.findViewById(R.id.no_result_txt);
         recyclerView = view.findViewById(R.id.posts_recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext() , 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         constraintLayout = view.findViewById(R.id.profile_fragment_layout);
 
         postsShimmerLayout = view.findViewById(R.id.shimmer_view_container);
@@ -122,9 +137,9 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 String newUserNameString = editProfileNameEditText.getText().toString();
                 String newUserBioString = editProfileBioEditText.getText().toString();
-                editProfile(CurrentUserData.USER_UID , newUserNameString , newUserBioString);
+                editProfile(CurrentUserData.USER_UID, newUserNameString, newUserBioString);
 
-                if (imageUri != null){
+                if (imageUri != null) {
                     changeImageStorage(CurrentUserData.USER_UID);
                     getUserData(CurrentUserData.USER_UID);
                     setUserData();
@@ -142,19 +157,21 @@ public class ProfileFragment extends Fragment {
                 GalleryIntent();
             }
         });
+        setHasOptionsMenu(true);
         return view;
     }
 
-    private void editProfile(String userUID , String newUserName , String newUserBio){
-     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-     reference.child("users").child(userUID).child("userName").setValue(newUserName);
-     reference.child("users").child(userUID).child("userBio").setValue(newUserBio);
+    private void editProfile(String userUID, String newUserName, String newUserBio) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("users").child(userUID).child("userName").setValue(newUserName);
+        reference.child("users").child(userUID).child("userBio").setValue(newUserBio);
 
 
     }
-    
+
     private void setUserData() {
         fanArtPostArrayList = CurrentUserData.USER_FAN_ARTS;
+
 
         User user = CurrentUserData.USER_DATA;
         if (user != null && !CurrentUserData.USER_UID.equals("")) {
@@ -175,10 +192,17 @@ public class ProfileFragment extends Fragment {
             userEmail.setText(user.getEmail());
         }
 
-        if (fanArtPostArrayList != null){
-            postsAdapter = new PostsAdapter(fanArtPostArrayList , getContext() , postsShimmerLayout);
+        if (!fanArtPostArrayList.isEmpty()) {
+            postsAdapter = new PostsAdapter(fanArtPostArrayList, getContext(), postsShimmerLayout);
             recyclerView.setAdapter(postsAdapter);
             postsShimmerLayout.stopShimmer();
+        }else{
+            userImageShimmerLayout.stopShimmer();
+//            noResultTextView.setVisibility(View.VISIBLE);
+//            noResultGifImage.setVisibility(View.VISIBLE);
+
+            recyclerView.setVisibility(View.GONE);
+            userImageShimmerLayout.setVisibility(View.GONE);
         }
     }
 
@@ -186,7 +210,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (fanArtPostArrayList != null){
+        if (fanArtPostArrayList != null) {
             getUserData(CurrentUserData.USER_UID);
 
         }
@@ -199,10 +223,13 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 CurrentUserData.USER_DATA = snapshot.getValue(User.class);
                 User user = CurrentUserData.USER_DATA;
-                userName.setText(user.getUserName());
-                userBio.setText(user.getUserBio());
-                userEmail.setText(user.getEmail());
-                Picasso.with(getContext()).load(user.getImageUrl()).into(userImage);
+                if (user != null){
+                    userName.setText(user.getUserName());
+                    userBio.setText(user.getUserBio());
+                    userEmail.setText(user.getEmail());
+                    Picasso.with(getContext()).load(user.getImageUrl()).into(userImage);
+                }
+
             }
 
             @Override
@@ -210,26 +237,24 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
-
     }
 
     public void GalleryIntent() {
         Intent photoIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoIntent.setType("image/*");
-        startActivityForResult(photoIntent , GET_IMAGE_STORAGE_CODE);
+        startActivityForResult(photoIntent, GET_IMAGE_STORAGE_CODE);
 
     }
 
-    public void changeImageStorage(String userID){
+    public void changeImageStorage(String userID) {
         getUserData(CurrentUserData.USER_UID);
         setUserData();
-        if (imageUri != null){
+        if (imageUri != null) {
             StorageReference referenceDelete = FirebaseStorage.getInstance().getReference().child("userImages").child(userID);
             referenceDelete.delete();
 
             StorageReference reference = FirebaseStorage.getInstance().getReference().child("userImages").child(userID);
-            reference.putFile(imageUri ).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            reference.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
@@ -243,17 +268,17 @@ public class ProfileFragment extends Fragment {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         String url = task.getResult().toString();
-                        Map<String , Object> map = new HashMap<>();
-                        map.put("imageUrl" , url);
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("imageUrl", url);
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
                         databaseReference.updateChildren(map);
 
-                    }else {
+                    } else {
                         System.out.println(task.getException().toString());
                     }
                 }
             });
-        }else {
+        } else {
             Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
         }
     }
@@ -265,5 +290,58 @@ public class ProfileFragment extends Fragment {
             imageUri = data.getData();
             editProfileImageView.setImageURI(imageUri);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.profile_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.delete_account){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+            dialog.setTitle("Alert");
+            dialog.setMessage("Are you sure you want to delete your account permanently?");
+            dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    AuthCredential credential = EmailAuthProvider.getCredential("user@example.com" , "password1234");
+
+                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    CurrentUserData.USER_UID = "";
+                                    CurrentUserData.USER_DATA = null;
+                                    CurrentUserData.USER_FAN_ARTS = null;
+                                }
+                            });
+
+                            FirebaseDatabase.getInstance().getReference().child("users").child(CurrentUserData.USER_UID).removeValue();
+                            FirebaseStorage.getInstance().getReference().child("users").child(CurrentUserData.USER_UID).delete();
+                            FirebaseStorage.getInstance().getReference().child("userImages").child(CurrentUserData.USER_UID).delete();
+                            getActivity().finish();
+                            startActivity(getActivity().getIntent());
+                        }
+                    });
+                }
+            });
+            dialog.show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

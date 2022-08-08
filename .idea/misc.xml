@@ -18,6 +18,7 @@
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_details.xml" value="0.25" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_info_list.xml" value="0.25" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_profile.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/additional_info_layout.xml" value="0.33" />
@@ -25,7 +26,7 @@
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/details_activity_video_layout.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_fans_art.xml" value="0.22756119673617406" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_gallery.xml" value="0.2975630611372381" />
-        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_gallery_list.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_gallery_list.xml" value="0.25" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_home.xml" value="0.2857142857142857" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_profile.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/layout/fragment_slideshow.xml" value="0.2975630611372381" />
@@ -42,6 +43,7 @@
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/menu/activity_main_drawer.xml" value="0.33" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/menu/main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/menu/post_menu.xml" value="0.182129115006413" />
+        <entry key="..\:/Users/DELL/Documents/GitHub/All_Might_Pedia/app/src/main/res/menu/profile_menu.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/circle_shape.xml" value="0.287109375" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/ic_menu_camera.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/Welcome/Documents/GitHub/AllMightPedia/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.15405405405405406" />

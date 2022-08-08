@@ -47,6 +47,7 @@
     <string name="aboutme">Hi, i am Mohammed, the creator of this app. I am a beginner programmer learning android development.
 i made this app to improve my coding skills and not out of weebary for all might :). (though i am still a weeb).
 if you liked my app and have suggestions for it let me know.</string>
+    <string name="delete_account">Delete Your Account</string>
 
     <integer-array name="img_id_arr">
         <item>@drawable/tab_selector</item>

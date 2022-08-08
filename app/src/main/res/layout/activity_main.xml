@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="end"
-    android:background="#FFF4D9">
+    android:background="#FFFFFF">
 
     <include
         android:id="@+id/app_bar_main"

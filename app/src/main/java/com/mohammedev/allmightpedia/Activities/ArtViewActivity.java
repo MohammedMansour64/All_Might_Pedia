@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ArtViewActivity extends AppCompatActivity {
 
@@ -57,7 +58,6 @@ public class ArtViewActivity extends AppCompatActivity {
     private String imageID;
     private String userID;
     private FanArtPost fanArtPost;
-    private StorageReference storageRef;
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     @Override
@@ -242,7 +242,7 @@ public class ArtViewActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (userID != null){
-            if (CurrentUserData.USER_UID == userID){
+            if (Objects.equals(CurrentUserData.USER_UID, userID)){
                 MenuInflater inflater = getMenuInflater();
                 inflater.inflate(R.menu.post_menu , menu);
                 return true;

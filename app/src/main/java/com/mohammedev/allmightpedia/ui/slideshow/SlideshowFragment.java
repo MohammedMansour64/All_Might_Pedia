@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +30,7 @@ import com.mohammedev.allmightpedia.Activities.InfoListActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Moment;
 import com.mohammedev.allmightpedia.databinding.FragmentSlideshowBinding;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ public class SlideshowFragment extends Fragment {
     private FragmentSlideshowBinding binding;
     private RecyclerView highlightedMomentsRecycler;
     private RecyclerView momentsRecycler;
+    SkeletonScreen momentsSkeletonScreen;
+    SkeletonScreen momentsSkeletonScreen2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class SlideshowFragment extends Fragment {
 
         highlightedMomentsRecycler = root.findViewById(R.id.highlighted_moments_recy);
         momentsRecycler = root.findViewById(R.id.other_moments_recy);
+        momentsSkeletonScreen = Skeleton.bind(highlightedMomentsRecycler).load(R.layout.layout_img_skeleton).show();
+        momentsSkeletonScreen2 = Skeleton.bind(momentsRecycler).load(R.layout.layout_highlighted_skeleton).show();
         fetchData();
 
         return root;
@@ -74,10 +81,9 @@ public class SlideshowFragment extends Fragment {
                 for (DataSnapshot data : snapshot.getChildren()){
                     Moment moment = data.getValue(Moment.class);
                     momentsArrayList.add(moment);
-                    System.out.println(momentsArrayList.get(0).getMomentTitle() + "All migdsh");
                 }
 
-                MomentsAdapter momentsAdapter = new MomentsAdapter(momentsArrayList , getContext());
+                MomentsAdapter momentsAdapter = new MomentsAdapter(momentsArrayList , getContext() , momentsSkeletonScreen2);
                 momentsRecycler.setLayoutManager(new GridLayoutManager(getContext() , 2));
                 momentsRecycler.setAdapter(momentsAdapter);
             }
@@ -96,7 +102,7 @@ public class SlideshowFragment extends Fragment {
                     Moment moment = data.getValue(Moment.class);
                     highLightedMomentsArrayList.add(moment);
                 }
-                HighlightedMomentsAdapter highlightedMomentsAdapter = new HighlightedMomentsAdapter(highLightedMomentsArrayList , getContext());
+                HighlightedMomentsAdapter highlightedMomentsAdapter = new HighlightedMomentsAdapter(highLightedMomentsArrayList , getContext() , momentsSkeletonScreen);
                 highlightedMomentsRecycler.setLayoutManager(new LinearLayoutManager(getContext() , RecyclerView.VERTICAL , false));
                 highlightedMomentsRecycler.setAdapter(highlightedMomentsAdapter);
             }
@@ -112,10 +118,12 @@ public class SlideshowFragment extends Fragment {
     public static class HighlightedMomentsAdapter extends RecyclerView.Adapter<HighlightedMomentsAdapter.HighLightedMomentsViewHolder>{
         ArrayList<Moment> highLightedMomentsArrayList;
         Context context;
+        SkeletonScreen momentsSkeletonScreen;
 
-        public HighlightedMomentsAdapter(ArrayList<Moment> highLightedMomentsAdapter , Context context) {
+        public HighlightedMomentsAdapter(ArrayList<Moment> highLightedMomentsAdapter , Context context , SkeletonScreen momentsSkeletonScreen) {
             this.highLightedMomentsArrayList = highLightedMomentsAdapter;
             this.context = context;
+            this.momentsSkeletonScreen = momentsSkeletonScreen;
         }
 
         @NonNull
@@ -131,7 +139,17 @@ public class SlideshowFragment extends Fragment {
             Moment highLightedMoment = highLightedMomentsArrayList.get(position);
 
             holder.highLightedMomentTextView.setText(highLightedMoment.getMomentTitle());
-            Picasso.with(context).load(highLightedMoment.getMomentImage()).into(holder.highLightedMomentImageView);
+            Picasso.with(context).load(highLightedMoment.getMomentImage()).into(holder.highLightedMomentImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
 
             holder.highLightedMomentTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -191,10 +209,12 @@ public class SlideshowFragment extends Fragment {
     public static class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.MomentsViewHolder>{
         ArrayList<Moment> momentsArrayList;
         Context context;
+        SkeletonScreen momentsSkeletonScreen;
 
-        public MomentsAdapter(ArrayList<Moment> momentsArrayList , Context context) {
+        public MomentsAdapter(ArrayList<Moment> momentsArrayList , Context context , SkeletonScreen momentsSkeletonScreen) {
             this.momentsArrayList = momentsArrayList;
             this.context = context;
+            this.momentsSkeletonScreen = momentsSkeletonScreen;
         }
 
         @NonNull
@@ -210,7 +230,17 @@ public class SlideshowFragment extends Fragment {
             Moment highLightedMoment = momentsArrayList.get(position);
 
             holder.momentTextView.setText(highLightedMoment.getMomentTitle());
-            Picasso.with(context).load(highLightedMoment.getMomentImage()).into(holder.momentImageView);
+            Picasso.with(context).load(highLightedMoment.getMomentImage()).into(holder.momentImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
             holder.momentTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

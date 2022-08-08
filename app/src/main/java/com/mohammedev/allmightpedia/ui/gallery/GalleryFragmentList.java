@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
@@ -35,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.Activities.LoginActivity;
+import com.mohammedev.allmightpedia.Adapters.GalleryAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Image;
 import com.mohammedev.allmightpedia.utils.CurrentUserData;
@@ -43,13 +45,16 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
 public class GalleryFragmentList extends Fragment {
 
     FirebaseRecyclerAdapter adapter;
+    ArrayList<Image> imagesArrayList = new ArrayList<>();
     RecyclerView recyclerView;
+    SkeletonScreen skeletonScreen;
 
 
     @Override
@@ -58,7 +63,8 @@ public class GalleryFragmentList extends Fragment {
 
         View root = LayoutInflater.from(getContext()).inflate(R.layout.fragment_gallery_list , container , false);
 
-        recyclerView = root.findViewById(R.id.recycler_view);
+        recyclerView = root.findViewById(R.id.recycler_view_gallery);
+        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_img_skeleton).show();
         recyclerView.setLayoutManager(new LinearLayoutManager(GalleryFragmentList.this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new ViewSpaces(20));
 
@@ -69,107 +75,17 @@ public class GalleryFragmentList extends Fragment {
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-    private void fetch() {
-        Query query = FirebaseDatabase.getInstance().getReference().child("photos");
-
-        FirebaseRecyclerOptions<Image> options = new FirebaseRecyclerOptions.Builder<Image>().setQuery(query, new SnapshotParser<Image>() {
-            @NonNull
-            @Override
-            public Image parseSnapshot(@NonNull DataSnapshot snapshot) {
-                return new Image(Objects.requireNonNull(snapshot.child("imageUrl").getValue()).toString());
-            }
-        }).build();
-
-
-        adapter = new FirebaseRecyclerAdapter<Image, GalleryFragmentList.GalleryListViewHolder>(options) {
-
-            @NonNull
-            @Override
-            public GalleryFragmentList.GalleryListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.gallery_recycler_view, parent, false);
-
-                return new GalleryFragmentList.GalleryListViewHolder(view);
-            }
-
-
-            @Override
-            protected void onBindViewHolder(@NonNull GalleryFragmentList.GalleryListViewHolder viewHolder, int i, @NonNull Image image) {
-
-                Picasso.with(GalleryFragmentList.this.getContext()).load(image.getImageUrl()).into(viewHolder.image);
-                viewHolder.downloadBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GalleryFragmentList.Downloading downloading = new GalleryFragmentList.Downloading();
-                        downloading.execute(image.getImageUrl());
-                    }
-                });
-                isFavourite(image.getImageUrl(), viewHolder.favoriteButton);
-                final boolean[] isFavourite = {false};
-                viewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (CurrentUserData.USER_DATA != null) {
-
-
-                            if (isFavourite[0]) {
-                                unFavouriteFun(image.getImageUrl());
-                                viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart);
-                            } else {
-                                Image image1 = new Image(image.getImageUrl());
-                                FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
-                                DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
-                                dataBaseReference.push().setValue(image1);
-                                viewHolder.favoriteButton.setImageResource(R.drawable.ic_heart_red);
-                            }
-                            isFavourite[0] = !isFavourite[0];
-                        }else{
-                            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                                    .setTitle(R.string.sign_in_required_to_favourite)
-                                    .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent signInIntent = new Intent(getActivity() , LoginActivity.class);
-                                            startActivity(signInIntent);
-                                        }
-                                    }).show();
-
-                            alertDialog.create();
-                        }
-                    }
-                });
-            }
-
-
-        };
-
-        recyclerView.setAdapter(adapter);
-
-
-    }
-
-    private void unFavouriteFun(String imageUrl) {
-        FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
-        DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
-        Query mQuery = dataBaseReference.orderByChild("imageUrl").equalTo(imageUrl);
-        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void fetch(){
+        FirebaseDatabase.getInstance().getReference().child("photos").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    dataSnapshot.getRef().removeValue();
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    Image image = ds.getValue(Image.class);
+                    imagesArrayList.add(image);
                 }
+                GalleryAdapter galleryAdapter = new GalleryAdapter(imagesArrayList , getContext());
+                recyclerView.setAdapter(galleryAdapter);
+
             }
 
             @Override
@@ -177,101 +93,5 @@ public class GalleryFragmentList extends Fragment {
 
             }
         });
-    }
-
-    private void isFavourite(String imageUrl , ImageButton imageButton){
-        FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
-        DatabaseReference dataBaseReference = dataBase.getReference("users").child(CurrentUserData.USER_UID).child("galleryFavourites");
-        Query mQuery = dataBaseReference.orderByChild("imageUrl").equalTo(imageUrl);
-        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    imageButton.setImageResource(R.drawable.ic_heart_red);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    public class Downloading extends AsyncTask<String, Integer, String> {
-
-        @Override
-        public void onPreExecute() {
-            super .onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... url) {
-            File mydir = new File(Environment.getExternalStorageDirectory() + "/AllMightPedia");
-            if (!mydir.exists()) {
-                mydir.mkdirs();
-            }
-
-            DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-            Uri downloadUri = Uri.parse(url[0]);
-            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("mmddyyyyhhmmss");
-            String date = dateFormat.format(new Date());
-
-            request.setAllowedNetworkTypes(
-                    DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false)
-                    .setTitle("Downloading")
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, date + "."+ getMimeType(GalleryFragmentList.this.getContext(), downloadUri));
-
-            request.setTitle("All Might Pedia");
-            request.setDescription("Downloading your All Might image...");
-            request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-            manager.enqueue(request);
-            return mydir.getAbsolutePath() + File.separator + date + "." + getMimeType(GalleryFragmentList.this.getContext(), downloadUri);
-        }
-
-
-
-        @Override
-        public void onPostExecute(String s) {
-            super .onPostExecute(s);
-        }
-    }
-
-    public static String getMimeType(Context context, Uri uri) {
-        String extension;
-
-        //Check uri format to avoid null
-        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-            //If scheme is a content
-            final MimeTypeMap mime = MimeTypeMap.getSingleton();
-            extension = mime.getExtensionFromMimeType(context.getContentResolver().getType(uri));
-        } else {
-            //If scheme is a File
-            //This will replace white spaces with %20 and also other special characters. This will avoid returning null values on file name with spaces and special characters.
-            extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
-
-        }
-
-        return extension;
-    }
-
-    class GalleryListViewHolder extends RecyclerView.ViewHolder {
-        private ImageView image;
-        private ImageButton downloadBtn;
-        private ImageButton favoriteButton;
-
-        public GalleryListViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            image = itemView.findViewById(R.id.image);
-            downloadBtn = itemView.findViewById(R.id.download_btn);
-            favoriteButton = itemView.findViewById(R.id.favourite_btn);
-
-        }
     }
 }
