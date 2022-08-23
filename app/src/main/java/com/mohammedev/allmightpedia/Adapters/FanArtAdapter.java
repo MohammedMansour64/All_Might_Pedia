@@ -1,6 +1,7 @@
 package com.mohammedev.allmightpedia.Adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,12 +23,15 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Activities.LoginActivity;
 import com.mohammedev.allmightpedia.Activities.MainActivity;
 import com.mohammedev.allmightpedia.Activities.ProfileActivity;
 import com.mohammedev.allmightpedia.R;
@@ -158,37 +163,78 @@ public class FanArtAdapter extends RecyclerView.Adapter<FanArtAdapter.FanArtView
         holder.likeButtonImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isItLiked) {
-                    int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() - 1;
-                    currentFanArtPost.setLikeCounter(test);
-                    holder.likeButtonImg.setImageResource(R.drawable.ic_heart);
-                    holder.likeCounterTxt.setText(String.valueOf(test));
-                    dislikeFunction(test , imageID, userID);
+                if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                    if (isItLiked) {
+                        int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() - 1;
+                        currentFanArtPost.setLikeCounter(test);
+                        holder.likeButtonImg.setImageResource(R.drawable.ic_heart);
+                        holder.likeCounterTxt.setText(String.valueOf(test));
+                        dislikeFunction(test , imageID, userID);
 
 
-                } else {
-                    int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() + 1;
-                    holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
-                    currentFanArtPost.setLikeCounter(test);
-                    holder.likeCounterTxt.setText(String.valueOf(test));
-                    likeFunction(test , imageID , userID);
+                    } else {
+                        int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() + 1;
+                        holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
+                        currentFanArtPost.setLikeCounter(test);
+                        holder.likeCounterTxt.setText(String.valueOf(test));
+                        likeFunction(test , imageID , userID);
 
+                    }
+                }else{
+                    AlertDialog alertDialog = new AlertDialog.Builder(context)
+                            .setTitle(R.string.sign_in_required)
+                            .setMessage(R.string.sign_in_required_to_interact_with_art)
+                            .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent signInIntent = new Intent(context , LoginActivity.class);
+                                    context.startActivity(signInIntent);
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+
+                    alertDialog.create();
                 }
+
             }
         });
 
         holder.postImage.setOnClickListener(new DoubleClickListener() {
             @Override
             public void onDoubleClick(View v) {
-                if (!isItLiked) {
-                    int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() + 1;
-                    holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
-                    currentFanArtPost.setLikeCounter(likeCounter);
-                    holder.likeCounterTxt.setText(String.valueOf(likeCounter));
-                    animationFunction(holder.heartAnimationImage);
-                    likeFunction(test , imageID , userID);
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    if (!isItLiked) {
+                        int test = fansList.get(holder.getAdapterPosition()).getLikeCounter() + 1;
+                        holder.likeButtonImg.setImageResource(R.drawable.ic_heart_red);
+                        currentFanArtPost.setLikeCounter(likeCounter);
+                        holder.likeCounterTxt.setText(String.valueOf(likeCounter));
+                        animationFunction(holder.heartAnimationImage);
+                        likeFunction(test, imageID, userID);
+                    } else {
+                        animationFunction(holder.heartAnimationImage);
+                    }
                 }else{
-                    animationFunction(holder.heartAnimationImage);
+                    AlertDialog alertDialog = new AlertDialog.Builder(context)
+                            .setTitle(R.string.sign_in_required)
+                            .setMessage(R.string.sign_in_required_to_interact_with_art)
+                            .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent signInIntent = new Intent(context , LoginActivity.class);
+                                    context.startActivity(signInIntent);
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+
+                    alertDialog.create();
                 }
             }
         });

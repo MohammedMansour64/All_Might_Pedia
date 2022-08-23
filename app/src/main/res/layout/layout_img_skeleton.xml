@@ -14,27 +14,27 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:layout_marginTop="10dp"
-        android:background="@color/light_transparent"
+        android:background="#4B000000"
         android:text="Vin Diesel" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginTop="16dp"
-        android:background="@color/light_transparent" />
+        android:background="#4B000000" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginTop="10dp"
-        android:background="@color/light_transparent"
+        android:background="#4B000000"
         android:text="Vin Diesel" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginTop="8dp"
-        android:background="@color/light_transparent"
+        android:background="#4B000000"
         android:text="a famous actor"
         android:textColor="@color/teal_700" />
 

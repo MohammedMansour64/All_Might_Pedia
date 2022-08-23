@@ -48,6 +48,8 @@
 i made this app to improve my coding skills and not out of weebary for all might :). (though i am still a weeb).
 if you liked my app and have suggestions for it let me know.</string>
     <string name="delete_account">Delete Your Account</string>
+    <string name="sign_in_required_to_interact_with_art">You need to be signed in to interact with this post</string>
+    <string name="copy_strike">ATTENTION: I do not own anything in this app including the audio and picture. The credits go to the respective owners. This is purely a fan-made and will not be used for profit or illegal sharing!</string>
 
     <integer-array name="img_id_arr">
         <item>@drawable/tab_selector</item>

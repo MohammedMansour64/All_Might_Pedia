@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,8 +40,10 @@ public class AboutMeFragment extends Fragment {
             }
         });
 
+        ImageView gmailImage = view.findViewById(R.id.imageView6);
 
-        view.findViewById(R.id.gmail).setOnClickListener(new View.OnClickListener() {
+
+        gmailImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
@@ -48,7 +52,9 @@ public class AboutMeFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        Button sendSuggestionButton = view.findViewById(R.id.button2);
+
+        sendSuggestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Uri uri = Uri.parse("https://www.paypal.com/donate/?hosted_button_id=R46L55TZENPUC"); // missing 'http://' will cause crashed
@@ -56,17 +62,6 @@ public class AboutMeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        view.findViewById(R.id.imageView4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri uri = Uri.parse("https://www.paypal.com/donate/?hosted_button_id=R46L55TZENPUC"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-            }
-        });
-
-
 
         circularProgressButton = view.findViewById(R.id.circularProgressButton);
 

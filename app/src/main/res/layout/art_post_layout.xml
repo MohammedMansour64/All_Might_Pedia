@@ -41,7 +41,7 @@
     <ImageView
         android:id="@+id/post_image"
         android:layout_width="0dp"
-        android:layout_height="360dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:maxHeight="330dp"
         android:minHeight="330dp"
@@ -65,7 +65,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:orientation="horizontal"

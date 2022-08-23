@@ -61,4 +61,47 @@
         app:layout_constraintTop_toBottomOf="@+id/text_slideshow2"
         app:spanCount="2"
         tools:listitem="@layout/moments_list_item" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/no_posts_gif"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="64dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/all_might_no_result_grey"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/other_moments_recy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/no_result_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/fjalla_one"
+        android:text="Unable to load moments"
+        android:textColor="#777777"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_posts_gif" />
+
+    <TextView
+        android:id="@+id/refresh_feed_text"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/fjalla_one"
+        android:text="Refresh"
+        android:textColor="#063B7E"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_result_txt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

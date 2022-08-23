@@ -1,6 +1,5 @@
 package com.mohammedev.allmightpedia.ui.SoundPad;
 
-import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.media.AudioManager;
@@ -17,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Audio;
-import com.mohammedev.allmightpedia.ui.gallery.GalleryFragment;
 import com.mohammedev.allmightpedia.utils.ViewSpaces;
 
 import java.io.IOException;
@@ -41,6 +41,7 @@ public class SoundPadFragment extends Fragment {
     RecyclerView recyclerView;
     MediaPlayer soundPlayer = new MediaPlayer();
     Uri audioUri;
+    boolean isPlaying = false;
     public static SoundPadFragment newInstance() {
         return new SoundPadFragment();
     }
@@ -103,14 +104,21 @@ public class SoundPadFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull SoundViewHolder viewHolder, int i, @NonNull Audio audio) {
                 viewHolder.audioName.setText(audio.getAudioName());
-                viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+                viewHolder.audioImageIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        try {
-                            playAudioFromUrl(audio.getAudioValue());
-                        } catch (IOException e) {
-                            e.printStackTrace();
+
+                        if (isPlaying){
+                            viewHolder.audioImageIcon.setImageResource(R.drawable.ic_sound);
+                            soundPlayer.stop();
+                            isPlaying = false;
+                        }else if (!isPlaying){
+                            isPlaying = true;
+                            playAudioFromUrl(viewHolder.audioImageIcon , viewHolder.progressBar , audio.getAudioValue());
+                            viewHolder.audioImageIcon.setImageResource(R.drawable.ic_sound_off);
                         }
+
+
                     }
                 });
             }
@@ -119,32 +127,53 @@ public class SoundPadFragment extends Fragment {
         };
         recyclerView.setAdapter(adapter);
 
-
     }
 
-    public void playAudioFromUrl(String url) throws IOException {
-        audioUri = Uri.parse(url);
-        soundPlayer.setDataSource(getActivity().getApplicationContext(), audioUri);
+    public void playAudioFromUrl(ImageView imageView  , ProgressBar progressBar , String url)  {
+
+        imageView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         try {
-            soundPlayer.prepare();
+            audioUri = Uri.parse(url);
+            soundPlayer.reset();
+            soundPlayer.setDataSource(getContext(), audioUri);
+            soundPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            soundPlayer.prepareAsync();
+            soundPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                    imageView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+
+            soundPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    imageView.setImageResource(R.drawable.ic_sound);
+                    isPlaying = false;
+                }
+            });
+
+
+
+
         } catch (IOException e){
             e.printStackTrace();
         }
-        soundPlayer.start();
     }
 
     class SoundViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
         private TextView audioName;
-
+        private ImageView audioImageIcon;
+        private ProgressBar progressBar;
         public SoundViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            cardView = itemView.findViewById(R.id.cardView);
-            audioName = itemView.findViewById(R.id.audio_name);
+            audioName = itemView.findViewById(R.id.textView32);
+            audioImageIcon = itemView.findViewById(R.id.imageView4);
+            progressBar = itemView.findViewById(R.id.progressBar2);
 
         }
     }
-
-
 }

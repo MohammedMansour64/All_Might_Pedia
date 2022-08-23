@@ -16,12 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
@@ -49,12 +51,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class GalleryFragmentList extends Fragment {
 
     FirebaseRecyclerAdapter adapter;
     ArrayList<Image> imagesArrayList = new ArrayList<>();
     RecyclerView recyclerView;
     SkeletonScreen skeletonScreen;
+    TextView noPostsText;
+    GifImageView noPostsGifImage;
+    TextView refreshFeedText;
 
 
     @Override
@@ -67,6 +74,17 @@ public class GalleryFragmentList extends Fragment {
         skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_img_skeleton).show();
         recyclerView.setLayoutManager(new LinearLayoutManager(GalleryFragmentList.this.getContext(), RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new ViewSpaces(20));
+
+        noPostsGifImage = root.findViewById(R.id.no_posts_gif);
+        noPostsText = root.findViewById(R.id.no_result_txt);
+        refreshFeedText = root.findViewById(R.id.refresh_feed_text);
+
+        refreshFeedText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshFeed();
+            }
+        });
 
         fetch();
 
@@ -83,8 +101,18 @@ public class GalleryFragmentList extends Fragment {
                     Image image = ds.getValue(Image.class);
                     imagesArrayList.add(image);
                 }
-                GalleryAdapter galleryAdapter = new GalleryAdapter(imagesArrayList , getContext());
-                recyclerView.setAdapter(galleryAdapter);
+                if (!imagesArrayList.isEmpty()){
+                    GalleryAdapter galleryAdapter = new GalleryAdapter(imagesArrayList , getContext());
+                    recyclerView.setAdapter(galleryAdapter);
+                }else{
+                    noPostsText.setVisibility(View.VISIBLE);
+                    noPostsGifImage.setVisibility(View.VISIBLE);
+                    refreshFeedText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    skeletonScreen.hide();
+                }
+
+
 
             }
 
@@ -93,5 +121,29 @@ public class GalleryFragmentList extends Fragment {
 
             }
         });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (imagesArrayList.isEmpty()){
+                    noPostsText.setVisibility(View.VISIBLE);
+                    noPostsGifImage.setVisibility(View.VISIBLE);
+                    refreshFeedText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    skeletonScreen.hide();
+                }
+
+
+            }
+        }, 5000);
+    }
+
+    public void refreshFeed(){
+        noPostsText.setVisibility(View.INVISIBLE);
+        noPostsGifImage.setVisibility(View.INVISIBLE);
+        refreshFeedText.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_img_skeleton).show();
+        fetch();
     }
 }

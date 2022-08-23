@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        String[] additionalInfoArray = {"All Might Smashes info" , "All Might Hero Ages" , "All Might battles" ,
+        String[] additionalInfoArray = {"All Might Smashes" , "All Might Hero Ages" , "All Might battles" ,
                                         "All Might Outfits" , "More All Might Info"};
 
         ListView additionalInfoListView = binding.listView;

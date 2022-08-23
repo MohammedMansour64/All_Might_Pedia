@@ -170,7 +170,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setUserData() {
-        fanArtPostArrayList = CurrentUserData.USER_FAN_ARTS;
+            fanArtPostArrayList = CurrentUserData.USER_FAN_ARTS;
+
 
 
         User user = CurrentUserData.USER_DATA;
@@ -197,12 +198,13 @@ public class ProfileFragment extends Fragment {
             recyclerView.setAdapter(postsAdapter);
             postsShimmerLayout.stopShimmer();
         }else{
-            userImageShimmerLayout.stopShimmer();
-//            noResultTextView.setVisibility(View.VISIBLE);
-//            noResultGifImage.setVisibility(View.VISIBLE);
+            postsShimmerLayout.stopShimmer();
+            recyclerView.setVisibility(View.INVISIBLE);
+            postsShimmerLayout.setVisibility(View.INVISIBLE);
+            noResultTextView.setVisibility(View.VISIBLE);
+            noResultGifImage.setVisibility(View.VISIBLE);
 
-            recyclerView.setVisibility(View.GONE);
-            userImageShimmerLayout.setVisibility(View.GONE);
+
         }
     }
 

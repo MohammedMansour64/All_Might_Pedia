@@ -2,9 +2,11 @@ package com.mohammedev.allmightpedia.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -96,21 +99,42 @@ public class ArtViewActivity extends AppCompatActivity {
             likeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (likeButton) {
-                        likeCounter--;
-                        fanArtPost.setLikeCounter(likeCounter);
-                        likeImage.setImageResource(R.drawable.ic_heart);
-                        likeCounterTxt.setText(String.valueOf(likeCounter));
-                        dislikeFunction(likeCounter,imageID , userID);
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
 
-                    } else if (!likeButton) {
-                        likeCounter++;
-                        likeImage.setImageResource(R.drawable.ic_heart_red);
-                        fanArtPost.setLikeCounter(likeCounter);
-                        likeCounterTxt.setText(String.valueOf(likeCounter));
-                        likeFunction(likeCounter,imageID , userID);
+                        if (likeButton) {
+                            likeCounter--;
+                            fanArtPost.setLikeCounter(likeCounter);
+                            likeImage.setImageResource(R.drawable.ic_heart);
+                            likeCounterTxt.setText(String.valueOf(likeCounter));
+                            dislikeFunction(likeCounter, imageID, userID);
+
+                        } else if (!likeButton) {
+                            likeCounter++;
+                            likeImage.setImageResource(R.drawable.ic_heart_red);
+                            fanArtPost.setLikeCounter(likeCounter);
+                            likeCounterTxt.setText(String.valueOf(likeCounter));
+                            likeFunction(likeCounter, imageID, userID);
 
 
+                        }
+                    }else{
+                        AlertDialog alertDialog = new AlertDialog.Builder(ArtViewActivity.this)
+                                .setTitle(R.string.sign_in_required)
+                                .setMessage(R.string.sign_in_required_to_interact_with_art)
+                                .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent signInIntent = new Intent(ArtViewActivity.this , LoginActivity.class);
+                                        startActivity(signInIntent);
+                                    }
+                                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+
+                        alertDialog.create();
                     }
                 }
             });
@@ -118,13 +142,33 @@ public class ArtViewActivity extends AppCompatActivity {
             postImage.setOnClickListener(new DoubleClickListener() {
                 @Override
                 public void onDoubleClick(View v) {
-                    animationFunction();
-                    if (!likeButton) {
-                        likeCounter++;
-                        likeImage.setImageResource(R.drawable.ic_heart_red);
-                        fanArtPost.setLikeCounter(likeCounter);
-                        likeCounterTxt.setText(String.valueOf(likeCounter));
-                        likeFunction(likeCounter,imageID , userID);
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        animationFunction();
+                        if (!likeButton) {
+                            likeCounter++;
+                            likeImage.setImageResource(R.drawable.ic_heart_red);
+                            fanArtPost.setLikeCounter(likeCounter);
+                            likeCounterTxt.setText(String.valueOf(likeCounter));
+                            likeFunction(likeCounter, imageID, userID);
+                        }
+                    }else {
+                        AlertDialog alertDialog = new AlertDialog.Builder(ArtViewActivity.this)
+                                .setTitle(R.string.sign_in_required)
+                                .setMessage(R.string.sign_in_required_to_interact_with_art)
+                                .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent signInIntent = new Intent(ArtViewActivity.this , LoginActivity.class);
+                                        startActivity(signInIntent);
+                                    }
+                                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+
+                        alertDialog.create();
                     }
                 }
             });

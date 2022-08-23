@@ -10,9 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
@@ -36,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import pl.droidsonroids.gif.GifImageView;
+
 
 public class FansArtFragment extends Fragment{
 
@@ -46,12 +51,29 @@ public class FansArtFragment extends Fragment{
     RecyclerView highlightRecyclerView;
     SkeletonScreen postsSkeletonScreen;
     SkeletonScreen highlightSkeletonScreen;
+
+    TextView noPostsText;
+    GifImageView noPostsGifImage;
+    TextView highLightedPostsText;
+    TextView refreshFeedText;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fans_art, container, false);
 
         fabNewPost = view.findViewById(R.id.add_new_post_fab);
+
+        noPostsGifImage = view.findViewById(R.id.no_posts_gif);
+        noPostsText = view.findViewById(R.id.no_result_txt);
+        highLightedPostsText = view.findViewById(R.id.textView25);
+        refreshFeedText = view.findViewById(R.id.refresh_feed_text);
+
+        refreshFeedText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshFeed();
+            }
+        });
 
         fabNewPost.setOnClickListener(v -> {
             if (!CurrentUserData.USER_UID.equals("") || CurrentUserData.USER_DATA != null){
@@ -100,7 +122,9 @@ public class FansArtFragment extends Fragment{
                     userList.add(users.getValue(User.class));
                 }
 
-                if (userList.size() > 0){
+
+
+                if (!userList.isEmpty()){
                     for (int i = 0; i < userList.size(); i++){
                         Query userPostsQuery = FirebaseDatabase.getInstance().getReference().child("users")
                                 .child(userList.get(i).getUserID()).child("posts");
@@ -109,14 +133,27 @@ public class FansArtFragment extends Fragment{
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+
                                 for (DataSnapshot posts: snapshot.getChildren()){
                                     FanArtPost fanArtPost = posts.getValue(FanArtPost.class);
                                     fanPostsList.add(fanArtPost);
                                 }
-                                getTopLiked(fanPostsList);
-                                fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList , postsSkeletonScreen);
-                                feedRecyclerView.setAdapter(fanArtAdapter);
 
+                                if (!fanPostsList.isEmpty()){
+                                    getTopLiked(fanPostsList);
+                                    fanArtAdapter = new FanArtAdapter(fanPostsList, getContext() , userList , postsSkeletonScreen);
+                                    feedRecyclerView.setAdapter(fanArtAdapter);
+
+                                }else {
+                                    noPostsText.setVisibility(View.VISIBLE);
+                                    noPostsGifImage.setVisibility(View.VISIBLE);
+                                    refreshFeedText.setVisibility(View.VISIBLE);
+                                    feedRecyclerView.setVisibility(View.INVISIBLE);
+                                    highlightRecyclerView.setVisibility(View.INVISIBLE);
+                                    highLightedPostsText.setVisibility(View.INVISIBLE);
+                                    highlightSkeletonScreen.hide();
+                                    postsSkeletonScreen.hide();
+                                }
 
                             }
 
@@ -129,6 +166,8 @@ public class FansArtFragment extends Fragment{
 
                     }
                 }
+
+
             }
 
             @Override
@@ -137,8 +176,38 @@ public class FansArtFragment extends Fragment{
             }
         });
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                        if (userList.isEmpty()){
+                            noPostsText.setVisibility(View.VISIBLE);
+                            noPostsGifImage.setVisibility(View.VISIBLE);
+                            refreshFeedText.setVisibility(View.VISIBLE);
+                            feedRecyclerView.setVisibility(View.INVISIBLE);
+                            highlightRecyclerView.setVisibility(View.INVISIBLE);
+                            highLightedPostsText.setVisibility(View.INVISIBLE);
+                            highlightSkeletonScreen.hide();
+                            postsSkeletonScreen.hide();
+                        }
 
 
+            }
+        }, 5000);
+
+
+
+    }
+
+    public void refreshFeed(){
+        noPostsText.setVisibility(View.INVISIBLE);
+        noPostsGifImage.setVisibility(View.INVISIBLE);
+        refreshFeedText.setVisibility(View.INVISIBLE);
+        feedRecyclerView.setVisibility(View.VISIBLE);
+        highlightRecyclerView.setVisibility(View.VISIBLE);
+        highLightedPostsText.setVisibility(View.VISIBLE);
+        highlightSkeletonScreen = Skeleton.bind(highlightRecyclerView).load(R.layout.layout_highlighted_skeleton).show();
+        postsSkeletonScreen = Skeleton.bind(highlightRecyclerView).load(R.layout.layout_highlighted_skeleton).show();
+        fetchFeed();
     }
 
     public void getTopLiked(ArrayList<FanArtPost> fanArtPosts){

@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         infoTitle = findViewById(R.id.info_title);
         infoDesc = findViewById(R.id.info_desc);
+        infoDesc.setMovementMethod(new ScrollingMovementMethod());
 
         String className = getIntent().getStringExtra("Class");
         if (className != null) {
@@ -46,7 +48,8 @@ public class DetailsActivity extends AppCompatActivity {
                 System.out.println(className);
                 InfoItem infoItem = getIntent().getParcelableExtra("infoItem");
                 infoTitle.setText(infoItem.getInfoTitle());
-                infoDesc.setText(infoItem.getInfoDesc());
+                String infoDescString = infoItem.getInfoDesc();
+                infoDesc.setText(infoDescString);
 
                 ViewPager2 viewPager2 = findViewById(R.id.view_pager2);
                 TabLayout viewPagerTabLayoutDotIndicator = findViewById(R.id.tabDots);

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telecom.Call;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mohammedev.allmightpedia.Activities.DetailsActivity;
-import com.mohammedev.allmightpedia.Activities.InfoListActivity;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Moment;
 import com.mohammedev.allmightpedia.databinding.FragmentSlideshowBinding;
@@ -34,6 +33,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import pl.droidsonroids.gif.GifImageView;
 
 public class SlideshowFragment extends Fragment {
 
@@ -50,6 +51,11 @@ public class SlideshowFragment extends Fragment {
     SkeletonScreen momentsSkeletonScreen;
     SkeletonScreen momentsSkeletonScreen2;
 
+    TextView noPostsText;
+    GifImageView noPostsGifImage;
+    TextView highLightedMomentsText , momentsText;
+    TextView refreshFeedText;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         slideshowViewModel =
@@ -64,6 +70,19 @@ public class SlideshowFragment extends Fragment {
         momentsSkeletonScreen2 = Skeleton.bind(momentsRecycler).load(R.layout.layout_highlighted_skeleton).show();
         fetchData();
 
+        noPostsGifImage = root.findViewById(R.id.no_posts_gif);
+        noPostsText = root.findViewById(R.id.no_result_txt);
+        highLightedMomentsText = root.findViewById(R.id.text_slideshow);
+        refreshFeedText = root.findViewById(R.id.refresh_feed_text);
+        momentsText = root.findViewById(R.id.text_slideshow2);
+
+        refreshFeedText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshMoments();
+            }
+        });
+
         return root;
     }
 
@@ -75,6 +94,8 @@ public class SlideshowFragment extends Fragment {
 
 
     public void fetchData(){
+        momentsArrayList.clear();
+        highLightedMomentsArrayList.clear();
         reference.child("moments").child("otherMoments").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -82,10 +103,23 @@ public class SlideshowFragment extends Fragment {
                     Moment moment = data.getValue(Moment.class);
                     momentsArrayList.add(moment);
                 }
+                if (!momentsArrayList.isEmpty()){
+                    MomentsAdapter momentsAdapter = new MomentsAdapter(momentsArrayList , getContext() , momentsSkeletonScreen2);
+                    momentsRecycler.setLayoutManager(new GridLayoutManager(getContext() , 2));
+                    momentsRecycler.setAdapter(momentsAdapter);
+                }else{
+                    noPostsText.setVisibility(View.VISIBLE);
+                    noPostsGifImage.setVisibility(View.VISIBLE);
+                    refreshFeedText.setVisibility(View.VISIBLE);
+                    momentsText.setVisibility(View.INVISIBLE);
+                    highlightedMomentsRecycler.setVisibility(View.INVISIBLE);
+                    momentsRecycler.setVisibility(View.INVISIBLE);
+                    highLightedMomentsText.setVisibility(View.INVISIBLE);
+                    momentsSkeletonScreen.hide();
+                    momentsSkeletonScreen2.hide();
+                }
 
-                MomentsAdapter momentsAdapter = new MomentsAdapter(momentsArrayList , getContext() , momentsSkeletonScreen2);
-                momentsRecycler.setLayoutManager(new GridLayoutManager(getContext() , 2));
-                momentsRecycler.setAdapter(momentsAdapter);
+
             }
 
             @Override
@@ -93,6 +127,25 @@ public class SlideshowFragment extends Fragment {
 
             }
         });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (momentsArrayList.isEmpty()){
+                    noPostsText.setVisibility(View.VISIBLE);
+                    noPostsGifImage.setVisibility(View.VISIBLE);
+                    refreshFeedText.setVisibility(View.VISIBLE);
+                    momentsText.setVisibility(View.INVISIBLE);
+                    momentsRecycler.setVisibility(View.INVISIBLE);
+                    highlightedMomentsRecycler.setVisibility(View.INVISIBLE);
+                    highLightedMomentsText.setVisibility(View.INVISIBLE);
+                    momentsSkeletonScreen.hide();
+                    momentsSkeletonScreen2.hide();
+                }
+
+
+            }
+        }, 5000);
 
 
         reference.child("moments").child("highLightedMoments").addValueEventListener(new ValueEventListener() {
@@ -112,6 +165,19 @@ public class SlideshowFragment extends Fragment {
 
             }
         });
+    }
+
+    public void refreshMoments(){
+        noPostsText.setVisibility(View.INVISIBLE);
+        noPostsGifImage.setVisibility(View.INVISIBLE);
+        refreshFeedText.setVisibility(View.INVISIBLE);
+        momentsText.setVisibility(View.VISIBLE);
+        momentsRecycler.setVisibility(View.VISIBLE);
+        highlightedMomentsRecycler.setVisibility(View.VISIBLE);
+        highLightedMomentsText.setVisibility(View.VISIBLE);
+        momentsSkeletonScreen = Skeleton.bind(highlightedMomentsRecycler).load(R.layout.layout_img_skeleton).show();
+        momentsSkeletonScreen2 = Skeleton.bind(momentsRecycler).load(R.layout.layout_highlighted_skeleton).show();
+        fetchData();
     }
 
 
