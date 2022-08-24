@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,28 +21,42 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.mohammedev.allmightpedia.Adapters.GalleryAdapter;
 import com.mohammedev.allmightpedia.R;
 import com.mohammedev.allmightpedia.data.Audio;
 import com.mohammedev.allmightpedia.utils.ViewSpaces;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Objects;
+
+import pl.droidsonroids.gif.GifImageView;
 
 public class SoundPadFragment extends Fragment {
 
     private SoundPadViewModel mViewModel;
+    private ArrayList<Audio> audioArrayList = new ArrayList<>();
     private FirebaseDatabase dataBase = FirebaseDatabase.getInstance();
     FirebaseRecyclerAdapter adapter;
     RecyclerView recyclerView;
     MediaPlayer soundPlayer = new MediaPlayer();
     Uri audioUri;
     boolean isPlaying = false;
+    TextView noPostsText;
+    GifImageView noPostsGifImage;
+    TextView refreshFeedText;
+    SkeletonScreen skeletonScreen;
     public static SoundPadFragment newInstance() {
         return new SoundPadFragment();
     }
@@ -53,8 +68,31 @@ public class SoundPadFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity().getApplicationContext(), 2));
         recyclerView.addItemDecoration(new ViewSpaces(20));
+        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_sound_skeleton).show();
+
+
+        noPostsGifImage = root.findViewById(R.id.no_sounds_gif);
+        noPostsText = root.findViewById(R.id.no_sounds_text);
+        refreshFeedText = root.findViewById(R.id.refresh_sounds_text);
+
+        refreshFeedText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshFeed();
+            }
+        });
+
         fetch();
         return root;
+    }
+
+    public void refreshFeed(){
+        noPostsText.setVisibility(View.INVISIBLE);
+        noPostsGifImage.setVisibility(View.INVISIBLE);
+        refreshFeedText.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        skeletonScreen = Skeleton.bind(recyclerView).load(R.layout.layout_sound_skeleton).show();
+        fetch();
     }
 
     @Override
@@ -64,68 +102,49 @@ public class SoundPadFragment extends Fragment {
         // TODO: Use the ViewModel
 
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
 
     private void fetch() {
-        Query query = FirebaseDatabase.getInstance().getReference().child("audio");
-
-        FirebaseRecyclerOptions<Audio> options = new FirebaseRecyclerOptions.Builder<Audio>().setQuery(query, new SnapshotParser<Audio>() {
-            @NonNull
+        audioArrayList.clear();
+        FirebaseDatabase.getInstance().getReference().child("audio").addValueEventListener(new ValueEventListener() {
             @Override
-            public Audio parseSnapshot(@NonNull DataSnapshot snapshot) {
-                return new Audio(Objects.requireNonNull(
-                        snapshot.child("audioValue").getValue()).toString(),
-                        Objects.requireNonNull(snapshot.child("audioName").getValue()).toString());
-            }
-        }).build();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    audioArrayList.add(ds.getValue(Audio.class));
+                }
+                if (!audioArrayList.isEmpty()){
+                    SoundAdapter soundAdapter = new SoundAdapter(audioArrayList);
+                    recyclerView.setAdapter(soundAdapter);
+                }else{
+                    noPostsText.setVisibility(View.VISIBLE);
+                    noPostsGifImage.setVisibility(View.VISIBLE);
+                    refreshFeedText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    skeletonScreen.hide();
+                }
 
-
-        adapter = new FirebaseRecyclerAdapter<Audio, SoundViewHolder>(options) {
-
-            @NonNull
-            @Override
-            public SoundViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.sound_button_layout, parent, false);
-
-                return new SoundViewHolder(view);
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull SoundViewHolder viewHolder, int i, @NonNull Audio audio) {
-                viewHolder.audioName.setText(audio.getAudioName());
-                viewHolder.audioImageIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                        if (isPlaying){
-                            viewHolder.audioImageIcon.setImageResource(R.drawable.ic_sound);
-                            soundPlayer.stop();
-                            isPlaying = false;
-                        }else if (!isPlaying){
-                            isPlaying = true;
-                            playAudioFromUrl(viewHolder.audioImageIcon , viewHolder.progressBar , audio.getAudioValue());
-                            viewHolder.audioImageIcon.setImageResource(R.drawable.ic_sound_off);
-                        }
-
-
-                    }
-                });
             }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (audioArrayList.isEmpty()){
+                    noPostsText.setVisibility(View.VISIBLE);
+                    noPostsGifImage.setVisibility(View.VISIBLE);
+                    refreshFeedText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    skeletonScreen.hide();
+                }
 
 
-        };
-        recyclerView.setAdapter(adapter);
+            }
+        }, 5000);
 
     }
 
@@ -164,16 +183,66 @@ public class SoundPadFragment extends Fragment {
         }
     }
 
-    class SoundViewHolder extends RecyclerView.ViewHolder {
-        private TextView audioName;
-        private ImageView audioImageIcon;
-        private ProgressBar progressBar;
-        public SoundViewHolder(@NonNull View itemView) {
-            super(itemView);
-            audioName = itemView.findViewById(R.id.textView32);
-            audioImageIcon = itemView.findViewById(R.id.imageView4);
-            progressBar = itemView.findViewById(R.id.progressBar2);
+    class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHolder>{
+        ArrayList<Audio> audioArrayList;
+
+        public SoundAdapter(ArrayList<Audio> audioArrayList) {
+            this.audioArrayList = audioArrayList;
+        }
+
+        @NonNull
+        @Override
+        public SoundViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.sound_button_layout, parent, false);
+
+            return new SoundViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SoundViewHolder holder, int position) {
+            Audio audio = audioArrayList.get(position);
+            holder.audioName.setText(audio.getAudioName());
+
+            holder.audioImageIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.audioImageIcon.setEnabled(false);
+                    if (isPlaying){
+                        holder.audioImageIcon.setImageResource(R.drawable.ic_sound);
+                        soundPlayer.stop();
+                        isPlaying = false;
+                        holder.audioImageIcon.setEnabled(true);
+                    }else if (!isPlaying){
+                        isPlaying = true;
+                        holder.audioImageIcon.setEnabled(true);
+                        playAudioFromUrl(holder.audioImageIcon , holder.progressBar , audio.getAudioValue());
+                        holder.audioImageIcon.setImageResource(R.drawable.ic_sound_off);
+                    }
+
+
+                }
+            });
 
         }
+
+        @Override
+        public int getItemCount() {
+            return audioArrayList.size();
+        }
+
+        class SoundViewHolder extends RecyclerView.ViewHolder {
+            private TextView audioName;
+            private ImageView audioImageIcon;
+            private ProgressBar progressBar;
+            public SoundViewHolder(@NonNull View itemView) {
+                super(itemView);
+                audioName = itemView.findViewById(R.id.textView32);
+                audioImageIcon = itemView.findViewById(R.id.imageView4);
+                progressBar = itemView.findViewById(R.id.progressBar2);
+
+            }
+        }
     }
-}
+
+    }

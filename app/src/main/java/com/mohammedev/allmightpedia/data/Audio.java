@@ -9,6 +9,9 @@ public class Audio {
         this.audioName = audioName;
     }
 
+    public Audio() {
+    }
+
     public String getAudioName() {
         return audioName;
     }
